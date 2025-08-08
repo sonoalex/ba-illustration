@@ -1,0 +1,592 @@
+{% extends "base.html" %}
+
+{% block title %}Shopping Cart - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .cart-hero {
+        padding: 8rem 0 4rem;
+        background: var(--gradient-primary);
+        color: white;
+        text-align: center;
+    }
+
+    .cart-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .cart-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    .cart-items {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .cart-item {
+        display: grid;
+        grid-template-columns: 120px 1fr auto auto auto;
+        gap: 1.5rem;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid var(--light-lavender);
+    }
+
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .item-info h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .item-info p {
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .item-category {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--light-lavender);
+        color: var(--primary-purple);
+        border-radius: 20px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        border: 2px solid var(--light-lavender);
+        border-radius: 50px;
+        overflow: hidden;
+    }
+
+    .quantity-btn {
+        background: var(--light-lavender);
+        border: none;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        font-size: 1rem;
+        color: var(--deep-navy);
+        transition: background 0.3s ease;
+    }
+
+    .quantity-btn:hover {
+        background: var(--primary-purple);
+        color: white;
+    }
+
+    .quantity-display {
+        width: 50px;
+        height: 35px;
+        border: none;
+        text-align: center;
+        font-weight: 500;
+        background: white;
+    }
+
+    .item-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--accent-coral);
+    }
+
+    .remove-btn {
+        background: none;
+        border: none;
+        color: var(--muted-gray);
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: color 0.3s ease;
+        padding: 0.5rem;
+    }
+
+    .remove-btn:hover {
+        color: #ef4444;
+    }
+
+    .cart-summary {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 100px;
+    }
+
+    .summary-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0;
+    }
+
+    .summary-row.total {
+        border-top: 2px solid var(--light-lavender);
+        padding-top: 1rem;
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--deep-navy);
+    }
+
+    .total-amount {
+        color: var(--accent-coral);
+        font-size: 1.5rem;
+    }
+
+    .checkout-form {
+        margin-top: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--deep-navy);
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--light-lavender);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-purple);
+    }
+
+    .checkout-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .checkout-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+
+    .checkout-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--muted-gray);
+    }
+
+    .empty-cart i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--light-lavender);
+    }
+
+    .empty-cart h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--deep-navy);
+    }
+
+    .continue-shopping {
+        margin-top: 2rem;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid var(--light-lavender);
+        border-top: 4px solid var(--primary-purple);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .cart-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .cart-item {
+            grid-template-columns: 80px 1fr auto;
+            gap: 1rem;
+            text-align: left;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+        }
+
+        .quantity-controls {
+            grid-column: 2 / 4;
+            margin-top: 1rem;
+            justify-self: start;
+        }
+
+        .item-price {
+            grid-column: 3;
+            grid-row: 1;
+            justify-self: end;
+        }
+
+        .remove-btn {
+            grid-column: 3;
+            grid-row: 2;
+            justify-self: end;
+        }
+    }
+</style>
+
+<script src="https://js.stripe.com/v3/"></script>
+
+<section class="cart-hero">
+    <h1>Your Cart</h1>
+</section>
+
+<div class="cart-container">
+    {% if cart_items %}
+    <div class="cart-items">
+        {% for item in cart_items %}
+        <div class="cart-item" data-product-id="{{ item.product.id }}">
+            <div class="item-image">
+                <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+            </div>
+            <div class="item-info">
+                <h3>{{ item.product.name }}</h3>
+                <p>{{ item.product.description[:100] }}...</p>
+                <span class="item-category">{{ item.product.category }}</span>
+            </div>
+            <div class="quantity-controls">
+                <button class="quantity-btn" onclick="updateQuantity({{ item.product.id }}, {{ item.quantity - 1 }})">-</button>
+                <input type="number" class="quantity-display" value="{{ item.quantity }}" readonly>
+                <button class="quantity-btn" onclick="updateQuantity({{ item.product.id }}, {{ item.quantity + 1 }})">+</button>
+            </div>
+            <div class="item-price">${{ "%.2f"|format(item.subtotal) }}</div>
+            <button class="remove-btn" onclick="removeFromCart({{ item.product.id }})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+        <h3 class="summary-title">Order Summary</h3>
+        <div class="summary-row">
+            <span>Subtotal:</span>
+            <span id="subtotal">${{ "%.2f"|format(total) }}</span>
+        </div>
+        <div class="summary-row">
+            <span>Shipping:</span>
+            <span>Free</span>
+        </div>
+        <div class="summary-row total">
+            <span>Total:</span>
+            <span class="total-amount" id="total">${{ "%.2f"|format(total) }}</span>
+        </div>
+
+        <form class="checkout-form" id="checkout-form">
+            <div class="form-group">
+                <label for="customer-name">Full Name</label>
+                <input type="text" id="customer-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="customer-email">Email Address</label>
+                <input type="email" id="customer-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="card-element">Payment Information</label>
+                <div id="card-element" style="padding: 0.75rem; border: 2px solid var(--light-lavender); border-radius: 10px; background: white;">
+                    <!-- Stripe Elements will create form elements here -->
+                </div>
+                <div id="card-errors" role="alert" style="color: #ef4444; margin-top: 0.5rem; font-size: 0.9rem;"></div>
+            </div>
+            <button type="submit" class="checkout-btn" id="submit-payment">
+                <i class="fas fa-lock"></i>
+                Secure Checkout - ${{ "%.2f"|format(total) }}
+            </button>
+        </form>
+    </div>
+    {% else %}
+    <div class="empty-cart" style="grid-column: 1 / -1;">
+        <i class="fas fa-shopping-cart"></i>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added any items to your cart yet.</p>
+        <div class="continue-shopping">
+            <a href="{{ url_for('shop.index') }}" class="btn btn-primary">Continue Shopping</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+    // Initialize Stripe
+    const stripe = Stripe('{{ stripe_key }}');
+    const elements = stripe.elements();
+
+    // Create card element
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#1e293b',
+                '::placeholder': {
+                    color: '#64748b',
+                },
+            },
+        },
+    });
+
+    // Mount card element
+    cardElement.mount('#card-element');
+
+    // Handle real-time validation errors from the card Element
+    cardElement.on('change', ({error}) => {
+        const displayError = document.getElementById('card-errors');
+        if (error) {
+            displayError.textContent = error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Handle form submission
+    const form = document.getElementById('checkout-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = document.getElementById('submit-payment');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        // Disable button and show loading
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        loadingOverlay.style.display = 'flex';
+
+        const {error, paymentMethod} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+                name: document.getElementById('customer-name').value,
+                email: document.getElementById('customer-email').value,
+            },
+        });
+
+        if (error) {
+            // Show error to customer
+            const errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message;
+            
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-lock"></i> Secure Checkout - ${{ "%.2f"|format(total) }}';
+            loadingOverlay.style.display = 'none';
+        } else {
+            // Create payment intent
+            try {
+        const response = await fetch("{{ url_for('shop.create_payment_intent') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('customer-name').value,
+                        email: document.getElementById('customer-email').value,
+                    }),
+                });
+
+                const {client_secret, order_id, error: serverError} = await response.json();
+
+                if (serverError) {
+                    throw new Error(serverError);
+                }
+
+                // Confirm payment
+                const {error: confirmError} = await stripe.confirmCardPayment(client_secret, {
+                    payment_method: paymentMethod.id,
+                });
+
+                if (confirmError) {
+                    // Show error to customer
+                    const errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = confirmError.message;
+                    
+                    // Re-enable button
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i class="fas fa-lock"></i> Secure Checkout - ${{ "%.2f"|format(total) }}';
+                    loadingOverlay.style.display = 'none';
+                } else {
+                    // Payment succeeded
+                    window.location.href = `/payment-success?order_id=${order_id}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = 'An error occurred. Please try again.';
+                
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-lock"></i> Secure Checkout - ${{ "%.2f"|format(total) }}';
+                loadingOverlay.style.display = 'none';
+            }
+        }
+    });
+
+    // Cart management functions
+    function updateQuantity(productId, newQuantity) {
+        if (newQuantity <= 0) {
+            removeFromCart(productId);
+            return;
+        }
+
+        fetch("{{ url_for('shop.update_cart') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: newQuantity
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+                if (data.success) {
+                    try { updateCartCount(); } catch (e) {}
+                    location.reload(); // Refresh the page to update totals
+                }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating cart');
+        });
+    }
+
+    function removeFromCart(productId) {
+        if (confirm('Are you sure you want to remove this item from your cart?')) {
+            fetch("{{ url_for('shop.remove_from_cart') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: productId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    try { updateCartCount(); } catch (e) {}
+                    location.reload(); // Refresh the page
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error removing item from cart');
+            });
+        }
+    }
+
+    // Update cart count in navbar
+    function updateNavbarCartCount() {
+        const cartItems = document.querySelectorAll('.cart-item');
+        let totalItems = 0;
+        
+        cartItems.forEach(item => {
+            const quantity = parseInt(item.querySelector('.quantity-display').value);
+            totalItems += quantity;
+        });
+        
+        document.getElementById('cart-count').textContent = totalItems;
+        sessionStorage.setItem('cart_count', totalItems);
+    }
+
+    // Initialize cart count
+    document.addEventListener('DOMContentLoaded', function() {
+        updateNavbarCartCount();
+    });
+</script>
+{% endblock %}

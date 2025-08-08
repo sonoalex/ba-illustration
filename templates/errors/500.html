@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Berta Albas{% endblock %}
+
+{% block content %}
+<section style="padding: 8rem 0 4rem; text-align: center; background: var(--soft-cream);">
+  <div style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+    <h1 class="serif-font" style="font-size: 3rem; color: var(--deep-navy); margin-bottom: 1rem;">Something went wrong</h1>
+    <p style="color: var(--muted-gray); font-size: 1.1rem; margin-bottom: 2rem;">
+      We’re experiencing an unexpected error. Please try again in a moment.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a class="btn btn-primary" href="{{ url_for('main.index') }}">Go to Home</a>
+      <a class="btn btn-outline" href="{{ url_for('main.contact') }}">Contact Me</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

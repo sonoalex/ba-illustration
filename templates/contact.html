@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .contact-hero {
+        padding: 8rem 0 4rem;
+        background: var(--gradient-primary);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .contact-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=1200') center/cover;
+        opacity: 0.1;
+    }
+
+    .contact-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: start;
+    }
+
+    .contact-info {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-form {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-info h2,
+    .contact-form h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        border-radius: 15px;
+        transition: background 0.3s ease;
+    }
+
+    .contact-item:hover {
+        background: var(--light-lavender);
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .contact-details h3 {
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .contact-details p {
+        color: var(--muted-gray);
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--deep-navy);
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--light-lavender);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary-purple);
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+
+    .submit-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .social-section {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--light-lavender);
+    }
+
+    .social-section h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        background: var(--gradient-secondary);
+        border-radius: 50%;
+        color: white;
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(251, 113, 133, 0.4);
+    }
+
+    .success-message {
+        background: #10b981;
+        color: white;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: none;
+    }
+
+    .error-message {
+        background: #ef4444;
+        color: white;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .contact-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 2rem 1rem;
+        }
+
+        .contact-info,
+        .contact-form {
+            padding: 2rem;
+        }
+
+        .contact-hero h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<section class="contact-hero">
+    <div class="contact-hero-content">
+        <h1>Let's Work Together</h1>
+        <p>Ready to bring your vision to life? Get in touch!</p>
+    </div>
+</section>
+
+<div class="contact-container">
+    <div class="contact-info">
+        <h2>Get in Touch</h2>
+        <p style="color: var(--muted-gray); margin-bottom: 2rem;">I'd love to hear about your project and discuss how we can create something amazing together.</p>
+
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="contact-details">
+                <h3>Email</h3>
+                <p>hello@bertaalbas.com</p>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-phone"></i>
+            </div>
+            <div class="contact-details">
+                <h3>Phone</h3>
+                <p>+1 (555) 123-4567</p>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="contact-details">
+                <h3>Location</h3>
+                <p>Sabadell, BCN</p>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="contact-details">
+                <h3>Response Time</h3>
+                <p>Within 24 hours</p>
+            </div>
+        </div>
+
+        <div class="social-section">
+            <h3>Follow My Work</h3>
+            <div class="social-links">
+                <a href="#" class="social-link" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link" title="Behance">
+                    <i class="fab fa-behance"></i>
+                </a>
+                <a href="#" class="social-link" title="Dribbble">
+                    <i class="fab fa-dribbble"></i>
+                </a>
+                <a href="#" class="social-link" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-form">
+        <h2>Send a Message</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{% if category == 'error' %}error-message{% else %}success-message{% endif %}" style="display: block;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" id="contact-form">
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Project Type</label>
+                <select id="subject" name="subject" style="width: 100%; padding: 0.75rem; border: 2px solid var(--light-lavender); border-radius: 10px; font-size: 1rem;">
+                    <option value="">Select a service</option>
+                    <option value="Custom Portrait">Custom Portrait</option>
+                    <option value="Brand Identity">Brand Identity</option>
+                    <option value="Web Design">Web Design</option>
+                    <option value="Print Design">Print Design</option>
+                    <option value="Logo Design">Logo Design</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="budget">Budget Range</label>
+                <select id="budget" name="budget" style="width: 100%; padding: 0.75rem; border: 2px solid var(--light-lavender); border-radius: 10px; font-size: 1rem;">
+                    <option value="">Select budget range</option>
+                    <option value="$500 - $1,000">$500 - $1,000</option>
+                    <option value="$1,000 - $2,500">$1,000 - $2,500</option>
+                    <option value="$2,500 - $5,000">$2,500 - $5,000</option>
+                    <option value="$5,000+">$5,000+</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="timeline">Project Timeline</label>
+                <select id="timeline" name="timeline" style="width: 100%; padding: 0.75rem; border: 2px solid var(--light-lavender); border-radius: 10px; font-size: 1rem;">
+                    <option value="">Select timeline</option>
+                    <option value="ASAP">ASAP</option>
+                    <option value="1-2 weeks">1-2 weeks</option>
+                    <option value="1 month">1 month</option>
+                    <option value="2-3 months">2-3 months</option>
+                    <option value="No rush">No rush</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Project Details *</label>
+                <textarea id="message" name="message" placeholder="Tell me about your project, goals, style preferences, and any specific requirements..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+                <i class="fas fa-paper-plane"></i>
+                Send Message
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+        const submitBtn = document.getElementById('submit-btn');
+        
+        // Disable button and show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        
+        // Re-enable button after form submission (in case of error)
+        setTimeout(() => {
+            if (submitBtn.disabled) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+            }
+        }, 5000);
+    });
+
+    // Form validation
+    const form = document.getElementById('contact-form');
+    const inputs = form.querySelectorAll('input[required], textarea[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                this.style.borderColor = '#ef4444';
+            } else {
+                this.style.borderColor = '#10b981';
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                this.style.borderColor = '#10b981';
+            }
+        });
+    });
+
+    // Email validation
+    const emailInput = document.getElementById('email');
+    emailInput.addEventListener('blur', function() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.value)) {
+            this.style.borderColor = '#ef4444';
+        } else {
+            this.style.borderColor = '#10b981';
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Berta Albas - Graphic Designer{% endblock %}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Brand palette */
+            --primary-purple: #6C5CE7;   /* Amethyst */
+            --secondary-pink: #F66D9B;   /* Rose */
+            --accent-coral: #F59E0B;     /* Amber */
+            --warm-gold: #F4B860;        /* Soft Gold */
+            --soft-cream: #FAFAF9;       /* Off-white */
+            --deep-navy: #0F172A;        /* Slate 900 */
+            --muted-gray: #475569;       /* Slate 600 */
+            --light-lavender: #EEF2FF;   /* Indigo 50 */
+            --gradient-primary: linear-gradient(135deg, #6C5CE7 0%, #F66D9B 100%);
+            --gradient-secondary: linear-gradient(135deg, #F66D9B 0%, #F4B860 100%);
+
+            /* Surfaces */
+            --bg-body: #FAFAF9;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --menu-bg: rgba(255, 255, 255, 0.98);
+            /* Footer */
+            --footer-bg: #1E293B;
+            --footer-border: #374151;
+        }
+
+        /* Dark theme */
+        :root[data-theme='dark'] {
+            --primary-purple: #8B80FF;
+            --secondary-pink: #FF77B7;
+            --accent-coral: #F59E0B;
+            --warm-gold: #F4B860;
+            --soft-cream: #0B1020;
+            --deep-navy: #E5E7EB;   /* text on dark */
+            --muted-gray: #9CA3AF;
+            --light-lavender: #111826;
+            --gradient-primary: linear-gradient(135deg, #1E1B4B 0%, #3B0C3F 100%);
+            --gradient-secondary: linear-gradient(135deg, #3B0C3F 0%, #3F2E12 100%);
+
+            --bg-body: #0B1020;
+            --navbar-bg: rgba(5, 7, 15, 0.7);
+            --menu-bg: rgba(10, 12, 22, 0.92);
+            /* Footer (dark) */
+            --footer-bg: #0A0F1E;
+            --footer-border: #243244;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--deep-navy);
+            overflow-x: hidden;
+            background-color: var(--bg-body);
+        }
+
+        .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--navbar-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            padding: 1rem 0;
+        }
+
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--deep-navy);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--deep-navy);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-purple);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.2rem;
+            color: var(--primary-purple);
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-coral);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-top: 80px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gradient-secondary);
+            color: white;
+            box-shadow: 0 8px 24px rgba(244, 184, 96, 0.35);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(251, 113, 133, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-purple);
+            border: 2px solid var(--primary-purple);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--footer-bg);
+            color: white;
+            padding: 4rem 0 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+            color: var(--secondary-pink);
+            letter-spacing: 0.3px;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary-pink);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--footer-border);
+            color: #9ca3af;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--menu-bg);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 1.25rem;
+                display: none;
+            }
+
+            .nav-menu.open {
+                display: flex;
+            }
+
+            .main-content {
+                margin-top: 96px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('main.index') }}" class="logo">Berta Albas</a>
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('portfolio.index') }}">Portfolio</a></li>
+                <li><a href="{{ url_for('shop.index') }}">Shop</a></li>
+                <li><a href="{{ url_for('main.about') }}">About</a></li>
+                <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+                <li>
+                    <a href="{{ url_for('shop.cart') }}" class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Theme toggle floating button -->
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <span class="icon-sun"><i class="fas fa-sun"></i></span>
+        <span class="icon-moon"><i class="fas fa-moon"></i></span>
+    </button>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Berta Albas</h3>
+                <p>Creative graphic designer specializing in brand identity, digital art, and custom portraits.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-behance"></i></a>
+                    <a href="#"><i class="fab fa-dribbble"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <a href="{{ url_for('shop.index') }}">Custom Portraits</a>
+                <a href="{{ url_for('portfolio.index') }}">Brand Identity</a>
+                <a href="{{ url_for('portfolio.index') }}">Web Design</a>
+                <a href="{{ url_for('portfolio.index') }}">Print Design</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p><i class="fas fa-envelope"></i> hello@bertaalbas.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> Sabadell, BCN</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Berta Albas. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle styles
+        (function injectThemeToggleStyles(){
+            const css = `
+            .theme-toggle { position: fixed; right: 18px; bottom: 18px; width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer; display: grid; place-items: center; background: var(--gradient-primary); color: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 1100; }
+            .theme-toggle .icon-moon { display: none; }
+            :root[data-theme='dark'] .theme-toggle { background: var(--gradient-secondary); }
+            :root[data-theme='dark'] .theme-toggle .icon-sun { display: none; }
+            :root[data-theme='dark'] .theme-toggle .icon-moon { display: inline; }
+            `;
+            const style = document.createElement('style');
+            style.innerHTML = css;
+            document.head.appendChild(style);
+        })();
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Update cart count
+        function updateCartCount() {
+            fetch("{{ url_for('shop.cart_count') }}")
+                .then(response => response.json())
+                .then(data => {
+                    const count = data.count ?? 0;
+                    document.getElementById('cart-count').textContent = count;
+                    try { sessionStorage.setItem('cart_count', count); } catch (e) {}
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Load cart count on page load from server
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+        });
+
+        // Mobile nav toggle
+        (function setupMobileNav() {
+            const toggle = document.getElementById('nav-toggle');
+            const menu = document.querySelector('.nav-menu');
+            if (!toggle || !menu) return;
+
+            toggle.addEventListener('click', function() {
+                menu.classList.toggle('open');
+            });
+
+            // Close menu when clicking a link
+            menu.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    menu.classList.remove('open');
+                }
+            });
+
+            // Reset on resize to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    menu.classList.remove('open');
+                }
+            });
+        })();
+
+        // Theme toggle logic
+        (function setupThemeToggle(){
+            const root = document.documentElement;
+            const btn = document.getElementById('theme-toggle');
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    root.setAttribute('data-theme', 'dark');
+                } else {
+                    root.removeAttribute('data-theme');
+                }
+                try { localStorage.setItem('theme', theme); } catch (e) {}
+            };
+
+            // Load preference
+            const stored = (()=>{ try { return localStorage.getItem('theme'); } catch (e) { return null; } })();
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(stored ? stored : (prefersDark ? 'dark' : 'light'));
+
+            // Toggle on click
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    const isDark = root.getAttribute('data-theme') === 'dark';
+                    applyTheme(isDark ? 'light' : 'dark');
+                });
+            }
+
+            // React to system changes
+            if (window.matchMedia) {
+                try {
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                        const storedNow = (()=>{ try { return localStorage.getItem('theme'); } catch (e) { return null; } })();
+                        if (!storedNow) applyTheme(e.matches ? 'dark' : 'light');
+                    });
+                } catch (e) {}
+            }
+        })();
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

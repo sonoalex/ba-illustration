@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+
+{% block title %}About - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .about-hero {
+        padding: 8rem 0 4rem;
+        background: var(--gradient-secondary);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://images.unsplash.com/photo-1551836022-deb4988cc6c0?w=1200') center/cover;
+        opacity: 0.1;
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .about-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .about-section {
+        padding: 4rem 0;
+    }
+
+    .about-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        margin-bottom: 4rem;
+    }
+
+    .about-text h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+    }
+
+    .about-text p {
+        color: var(--muted-gray);
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+
+    .about-image {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-image img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+    }
+
+    .skills-section {
+        background: var(--light-lavender);
+        padding: 4rem 0;
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .skill-item {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .skill-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .skill-icon {
+        width: 60px;
+        height: 60px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .skill-item h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-section {
+        padding: 4rem 0;
+    }
+
+    .timeline {
+        position: relative;
+        max-width: 800px;
+        margin: 3rem auto 0;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--gradient-primary);
+        transform: translateX(-50%);
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 3rem;
+        width: 45%;
+    }
+
+    .timeline-item:nth-child(odd) {
+        left: 0;
+        text-align: right;
+    }
+
+    .timeline-item:nth-child(even) {
+        left: 55%;
+        text-align: left;
+    }
+
+    .timeline-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .timeline-year {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-purple);
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-description {
+        color: var(--muted-gray);
+        line-height: 1.6;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: var(--primary-purple);
+        border-radius: 50%;
+        top: 2rem;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-dot {
+        right: -53px;
+    }
+
+    .timeline-item:nth-child(even) .timeline-dot {
+        left: -53px;
+    }
+
+    @media (max-width: 768px) {
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .timeline::before {
+            left: 20px;
+        }
+
+        .timeline-item {
+            width: calc(100% - 40px);
+            left: 40px !important;
+            text-align: left !important;
+        }
+
+        .timeline-item .timeline-dot {
+            left: -53px !important;
+        }
+
+        .about-hero h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<section class="about-hero">
+    <div class="about-hero-content">
+        <h1>About Berta</h1>
+        <p>Passionate designer creating meaningful visual experiences</p>
+    </div>
+</section>
+
+<section class="about-section">
+    <div class="about-container">
+        <div class="about-grid">
+            <div class="about-text">
+                <h2>My Design Philosophy</h2>
+                <p>I believe that great design is more than just making things look pretty—it's about solving problems, telling stories, and creating emotional connections between brands and their audiences.</p>
+                <p>With over 8 years of experience in graphic design, I've had the privilege of working with startups, established businesses, and individual clients to bring their visions to life through thoughtful, strategic design.</p>
+                <p>My approach combines creative intuition with data-driven insights, ensuring that every design decision serves both aesthetic and functional purposes.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1494790108755-2616c8da3f46?w=600" alt="Berta Albas at work">
+            </div>
+        </div>
+
+        <div class="about-grid" style="flex-direction: row-reverse;">
+            <div class="about-text">
+                <h2>Beyond Design</h2>
+                <p>When I'm not designing, you can find me exploring art galleries, traveling to discover new cultures and visual inspirations, or experimenting with traditional art techniques like watercolor and oil painting.</p>
+                <p>I'm passionate about sustainability and try to incorporate eco-friendly practices into my work whenever possible. I also enjoy mentoring young designers and contributing to the creative community through workshops and online tutorials.</p>
+                <p>My goal is to continue growing as a designer while helping others tell their stories through beautiful, meaningful design.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=600" alt="Berta's creative process">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="skills-section">
+    <div class="about-container">
+        <div class="section-header" style="text-align: center;">
+            <h2>Skills & Expertise</h2>
+            <p>A comprehensive toolkit for bringing creative visions to life</p>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3>Brand Identity</h3>
+                <p>Creating cohesive brand experiences from logo to guidelines</p>
+            </div>
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3>Digital Design</h3>
+                <p>Web design, UI/UX, and digital marketing materials</p>
+            </div>
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="fas fa-print"></i>
+                </div>
+                <h3>Print Design</h3>
+                <p>Brochures, posters, packaging, and editorial design</p>
+            </div>
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <h3>Illustration</h3>
+                <p>Custom illustrations and portrait artwork</p>
+            </div>
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Photography</h3>
+                <p>Product photography and photo editing</p>
+            </div>
+            <div class="skill-item">
+                <div class="skill-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Consultation</h3>
+                <p>Design strategy and creative direction</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="timeline-section">
+    <div class="about-container">
+        <div class="section-header" style="text-align: center;">
+            <h2>My Journey</h2>
+            <p>Key milestones in my design career</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-title">Freelance Studio Launch</div>
+                    <div class="timeline-description">Launched my own design studio, focusing on custom portraits and brand identity for creative entrepreneurs.</div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-year">2022</div>
+                    <div class="timeline-title">Senior Designer - Creative Agency</div>
+                    <div class="timeline-description">Led design projects for Fortune 500 companies, mentored junior designers, and developed brand guidelines.</div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-title">Graphic Designer - Tech Startup</div>
+                    <div class="timeline-description">Designed user interfaces, marketing materials, and brand assets for a fast-growing SaaS company.</div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-year">2018</div>
+                    <div class="timeline-title">Junior Designer - Marketing Agency</div>
+                    <div class="timeline-description">Started my professional career creating print and digital designs for various client campaigns.</div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-year">2016</div>
+                    <div class="timeline-title">Bachelor's in Graphic Design</div>
+                    <div class="timeline-description">Graduated with honors from the Rhode Island School of Design, specializing in visual communication.</div>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

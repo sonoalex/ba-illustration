@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio - Berta Albas {% endblock %}
+
+{% block content %}
+<style>
+    .portfolio-hero {
+        padding: 8rem 0 4rem;
+        background: var(--gradient-primary);
+        color: white;
+        text-align: center;
+    }
+
+    .portfolio-hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .portfolio-hero p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .portfolio-filters {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 3rem 0;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        border: 2px solid var(--primary-purple);
+        border-radius: 50px;
+        color: var(--primary-purple);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+        background: var(--primary-purple);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .portfolio-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem 4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .portfolio-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .portfolio-item:nth-child(1) { animation-delay: 0.1s; }
+    .portfolio-item:nth-child(2) { animation-delay: 0.2s; }
+    .portfolio-item:nth-child(3) { animation-delay: 0.3s; }
+    .portfolio-item:nth-child(4) { animation-delay: 0.4s; }
+    .portfolio-item:nth-child(5) { animation-delay: 0.5s; }
+    .portfolio-item:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .portfolio-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .portfolio-item img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .portfolio-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .portfolio-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(244, 114, 182, 0.9));
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        transition: opacity 0.3s ease;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .portfolio-item:hover .portfolio-overlay {
+        opacity: 1;
+    }
+
+    .portfolio-overlay h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .portfolio-overlay p {
+        opacity: 0.9;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+
+    .portfolio-category {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .portfolio-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: white;
+        margin: 5% auto;
+        padding: 0;
+        width: 90%;
+        max-width: 800px;
+        border-radius: 20px;
+        overflow: hidden;
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 2001;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--primary-purple);
+        transform: scale(1.1);
+    }
+
+    .modal-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .modal-info {
+        padding: 2rem;
+    }
+
+    .modal-info h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+    }
+
+    .modal-info p {
+        color: var(--muted-gray);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .modal-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .modal-tag {
+        padding: 0.25rem 0.75rem;
+        background: var(--light-lavender);
+        color: var(--primary-purple);
+        border-radius: 20px;
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+        .portfolio-hero {
+            padding: 6rem 0 3rem;
+        }
+
+        .portfolio-hero h1 {
+            font-size: 2rem;
+        }
+
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .portfolio-filters {
+            padding: 2rem 1rem;
+        }
+
+        .modal-content {
+            width: 95%;
+            margin: 10% auto;
+        }
+
+        .modal-info {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<section class="portfolio-hero">
+    <h1>My Portfolio</h1>
+    <p>Explore my creative journey through various design projects, each crafted with passion and attention to detail.</p>
+</section>
+
+<div class="portfolio-filters">
+    <a href="{{ url_for('portfolio.index', category='all') }}" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">All Work</a>
+    {% for category in categories %}
+    <a href="{{ url_for('portfolio.index', category=category) }}" class="filter-btn {% if selected_category == category %}active{% endif %}">{{ category.title() }}</a>
+    {% endfor %}
+</div>
+
+<div class="portfolio-grid">
+    {% for work in works %}
+    <div class="portfolio-item" data-category="{{ work.category }}" onclick="openModal({{ work.id }})">
+        <img src="{{ work.image_url }}" alt="{{ work.title }}">
+        <div class="portfolio-overlay">
+            <h3>{{ work.title }}</h3>
+            <p>{{ work.description }}</p>
+            <span class="portfolio-category">{{ work.category }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal -->
+<div id="portfolioModal" class="portfolio-modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" class="modal-image" src="" alt="">
+        <div class="modal-info">
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+            <div class="modal-tags">
+                <span class="modal-tag" id="modalCategory"></span>
+                <span class="modal-tag">Creative Design</span>
+                <span class="modal-tag">Professional</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const portfolioData = {
+        {% for work in works %}
+        {{ work.id }}: {
+            title: "{{ work.title }}",
+            description: "{{ work.description }}",
+            image_url: "{{ work.image_url }}",
+            category: "{{ work.category }}"
+        },
+        {% endfor %}
+    };
+
+    function openModal(workId) {
+        const work = portfolioData[workId];
+        if (work) {
+            document.getElementById('modalImage').src = work.image_url;
+            document.getElementById('modalTitle').textContent = work.title;
+            document.getElementById('modalDescription').textContent = work.description;
+            document.getElementById('modalCategory').textContent = work.category.toUpperCase();
+            document.getElementById('portfolioModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('portfolioModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        const modal = document.getElementById('portfolioModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    // Close modal with escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Smooth filter transitions
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

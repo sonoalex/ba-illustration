@@ -1,0 +1,704 @@
+{% extends "base.html" %}
+
+{% block title %}Berta Albas - Creative Graphic Designer{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero {
+        min-height: 85vh;
+        background: radial-gradient(1200px 600px at 20% 20%, rgba(255,255,255,0.08), transparent 60%), var(--gradient-primary);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://images.unsplash.com/photo-1558655146-d09347e92766?w=1200') center/cover;
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        50% { transform: translateY(-10px) scale(1.02); }
+    }
+
+    .hero-content {
+        text-align: center;
+        z-index: 2;
+        max-width: 800px;
+        padding: 0 2rem;
+        animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    /* Typewriter effect */
+    .typewriter-heading {
+        display: inline-block;
+        white-space: normal;            /* allow wrapping */
+        overflow-wrap: anywhere;        /* break long words if needed */
+        word-break: break-word;         /* ensure no overflow */
+        max-width: 100%;
+        line-height: 1.2;
+    }
+    .typing-caret {
+        display: inline-block;
+        margin-left: 6px;
+        color: #fff;
+        animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            padding: 4rem 0 3rem;
+        }
+        .hero-content {
+            padding: 0 1rem;
+        }
+        .hero p {
+            font-size: 1rem;
+        }
+        .hero-buttons .btn {
+            width: 100%;
+            max-width: 360px;
+        }
+    }
+
+    .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .floating-shape {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: floatShapes 8s ease-in-out infinite;
+    }
+
+    .floating-shape:nth-child(1) {
+        width: 60px;
+        height: 60px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+        width: 80px;
+        height: 80px;
+        top: 60%;
+        right: 15%;
+        animation-delay: 2s;
+    }
+
+    .floating-shape:nth-child(3) {
+        width: 40px;
+        height: 40px;
+        bottom: 30%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    @keyframes floatShapes {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* About Section */
+    .about-section {
+        padding: 5rem 0;
+        background: var(--soft-cream);
+        position: relative;
+    }
+
+    .about-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .about-text h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+    }
+
+    .about-text p {
+        font-size: 1.1rem;
+        color: var(--muted-gray);
+        margin-bottom: 1.5rem;
+        line-height: 1.7;
+    }
+
+    .about-image {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-image img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .about-image:hover img {
+        transform: scale(1.05);
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 4rem 0;
+        background: var(--gradient-secondary);
+        color: white;
+    }
+
+    .stats-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .stat-item {
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.14);
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    /* Portfolio Preview */
+    .portfolio-preview {
+        padding: 5rem 0;
+        background: white;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+    }
+
+    .section-header p {
+        font-size: 1.1rem;
+        color: var(--muted-gray);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .portfolio-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .portfolio-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .portfolio-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .portfolio-item img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .portfolio-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .portfolio-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(108, 92, 231, 0.92), rgba(246, 109, 155, 0.92));
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        transition: opacity 0.3s ease;
+    }
+
+    .portfolio-item:hover .portfolio-overlay {
+        opacity: 0.9;
+    }
+
+    .portfolio-overlay h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    .portfolio-overlay p {
+        text-align: center;
+        opacity: 0.9;
+    }
+
+    /* Services Section */
+    .services-section {
+        padding: 5rem 0;
+        background: var(--light-lavender);
+    }
+
+    .services-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .service-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 2rem;
+    }
+
+    .service-card h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+    }
+
+    .service-card p {
+        color: var(--muted-gray);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-price {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-purple);
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 5rem 0;
+        background: var(--gradient-primary);
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200') center/cover;
+        opacity: 0.1;
+    }
+
+    .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-content h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .about-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stats-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="floating-elements">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+    <div class="hero-content">
+        <h1 class="typewriter-heading"><span id="typewriter">Creative Design That Tells Your Story</span><span class="typing-caret">|</span></h1>
+        <p>I'm Berta Albas, a passionate graphic designer specializing in brand identity, digital art, and custom portraits that capture the essence of who you are.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary">View My Work</a>
+            <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Commission Art</a>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section">
+    <div class="about-container">
+        <div class="about-text">
+            <h2>Design with Purpose & Passion</h2>
+            <p>With over 8 years of experience in graphic design, I believe that great design goes beyond aesthetics—it tells a story, evokes emotion, and creates connections.</p>
+            <p>My approach combines creative intuition with strategic thinking, ensuring that every project not only looks beautiful but also serves its intended purpose effectively.</p>
+            <a href="{{ url_for('main.about') }}" class="btn btn-primary">Learn More About Me</a>
+        </div>
+        <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1494790108755-2616c8da3f46?w=600" alt="Berta Albas - Graphic Designer">
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-container">
+        <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <span class="stat-label">Projects Completed</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">150+</span>
+            <span class="stat-label">Happy Clients</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">8+</span>
+            <span class="stat-label">Years Experience</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">25+</span>
+            <span class="stat-label">Awards Won</span>
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Preview -->
+<section class="portfolio-preview">
+    <div class="section-header">
+        <h2>Featured Work</h2>
+        <p>A curated selection of my recent projects showcasing various design disciplines and creative solutions.</p>
+    </div>
+    <div class="portfolio-grid">
+        {% for work in featured_works %}
+        <div class="portfolio-item">
+            <img src="{{ work.image_url }}" alt="{{ work.title }}">
+            <div class="portfolio-overlay">
+                <h3>{{ work.title }}</h3>
+                <p>{{ work.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="text-align: center; margin-top: 3rem;">
+        <a href="{{ url_for('portfolio.index') }}" class="btn btn-primary">View Full Portfolio</a>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section">
+    <div class="section-header">
+        <h2>My Services</h2>
+        <p>From custom portraits to complete brand identities, I offer a range of design services tailored to your needs.</p>
+    </div>
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fas fa-paint-brush"></i>
+            </div>
+            <h3>Custom Portraits</h3>
+            <p>Personalized digital and traditional portraits that capture the unique personality and essence of your subject.</p>
+            <div class="service-price">Starting at $150</div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h3>Brand Identity</h3>
+            <p>Complete brand identity packages including logo design, color palettes, typography, and brand guidelines.</p>
+            <div class="service-price">Starting at $800</div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fas fa-laptop"></i>
+            </div>
+            <h3>Web Design</h3>
+            <p>Modern, responsive website designs that perfectly represent your brand and engage your audience.</p>
+            <div class="service-price">Starting at $1,200</div>
+        </div>
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fas fa-print"></i>
+            </div>
+            <h3>Print Design</h3>
+            <p>Eye-catching print materials including brochures, posters, business cards, and packaging design.</p>
+            <div class="service-price">Starting at $200</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-bg"></div>
+    <div class="cta-content">
+        <h2>Ready to Bring Your Vision to Life?</h2>
+        <p>Let's collaborate to create something extraordinary that perfectly represents your unique story and vision.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('main.contact') }}" class="btn btn-secondary">Start a Project</a>
+            <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Browse Shop</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Parallax effect for hero background
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const heroBg = document.querySelector('.hero-bg');
+        const ctaBg = document.querySelector('.cta-bg');
+        
+        if (heroBg) {
+            heroBg.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+        
+        if (ctaBg) {
+            ctaBg.style.transform = `translateY(${scrolled * 0.3}px)`;
+        }
+    });
+
+    // Animate stats on scroll
+    const animateStats = () => {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const finalNumber = entry.target.textContent.replace('+', '');
+                    let currentNumber = 0;
+                    const increment = parseInt(finalNumber) / 50;
+                    
+                    const timer = setInterval(() => {
+                        currentNumber += increment;
+                        if (currentNumber >= parseInt(finalNumber)) {
+                            entry.target.textContent = finalNumber + '+';
+                            clearInterval(timer);
+                        } else {
+                            entry.target.textContent = Math.floor(currentNumber) + '+';
+                        }
+                    }, 30);
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+        
+        statNumbers.forEach(stat => observer.observe(stat));
+    };
+
+    document.addEventListener('DOMContentLoaded', animateStats);
+
+    // Typewriter effect
+    (function initTypewriter() {
+        const element = document.getElementById("typewriter");
+        if (!element) return;
+
+        const phrases = [
+            "Creative Design That Tells Your Story",
+            "Brand Identity · Digital Art · Custom Portraits",
+            "Beautiful Visuals, Clear Strategy"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+
+        const typingSpeed = 70;       // ms per character when typing
+        const deletingSpeed = 45;     // ms per character when deleting
+        const pauseAfterType = 1200;  // pause after completing a phrase
+        const pauseAfterDelete = 300; // pause before typing next phrase
+
+        function tick() {
+            const current = phrases[phraseIndex];
+
+            if (!deleting) {
+                charIndex = Math.min(charIndex + 1, current.length);
+            } else {
+                charIndex = Math.max(charIndex - 1, 0);
+            }
+
+            element.textContent = current.substring(0, charIndex);
+
+            if (!deleting && charIndex === current.length) {
+                deleting = true;
+                setTimeout(tick, pauseAfterType);
+                return;
+            }
+
+            if (deleting && charIndex === 0) {
+                deleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(tick, pauseAfterDelete);
+                return;
+            }
+
+            setTimeout(tick, deleting ? deletingSpeed : typingSpeed);
+        }
+
+        // Start typing after initial small delay
+        setTimeout(tick, 300);
+    })();
+</script>
+{% endblock %}
