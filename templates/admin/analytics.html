@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Analíticas - Admin{% endblock %}
+
+{% block content %}
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin: 0;
+    }
+
+    .analytics-content {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        text-align: center;
+    }
+
+    .analytics-icon {
+        font-size: 4rem;
+        color: var(--light-lavender);
+        margin-bottom: 1rem;
+    }
+
+    .analytics-title {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .analytics-description {
+        color: var(--muted-gray);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .coming-soon-features {
+        background: var(--light-lavender);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 2rem;
+        text-align: left;
+    }
+
+    .coming-soon-features h3 {
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .features-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .features-list li {
+        padding: 0.5rem 0;
+        color: var(--muted-gray);
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    .features-list li::before {
+        content: '📊';
+        position: absolute;
+        left: 0;
+    }
+</style>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Analíticas</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Dashboard
+        </a>
+    </div>
+
+    <div class="analytics-content">
+        <div class="analytics-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        
+        <h2 class="analytics-title">Analíticas en Desarrollo</h2>
+        
+        <p class="analytics-description">
+            Esta sección estará disponible próximamente con gráficos detallados, 
+            estadísticas de ventas, análisis de usuarios y métricas de rendimiento.
+        </p>
+
+        <div class="coming-soon-features">
+            <h3>Próximas Funcionalidades:</h3>
+            <ul class="features-list">
+                <li>Gráficos de ventas mensuales y anuales</li>
+                <li>Análisis de productos más vendidos</li>
+                <li>Métricas de conversión de usuarios</li>
+                <li>Estadísticas de ingresos por período</li>
+                <li>Análisis de comportamiento de usuarios</li>
+                <li>Reportes de rendimiento de la tienda</li>
+                <li>Exportación de datos en diferentes formatos</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

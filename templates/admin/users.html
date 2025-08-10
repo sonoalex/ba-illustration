@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Usuarios - Admin{% endblock %}
+
+{% block content %}
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin: 0;
+    }
+
+    .users-table {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .table-header {
+        background: var(--light-lavender);
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        font-weight: 600;
+        color: var(--deep-navy);
+    }
+
+    .user-row {
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        border-bottom: 1px solid var(--light-lavender);
+        transition: background 0.3s ease;
+    }
+
+    .user-row:hover {
+        background: #f8fafc;
+    }
+
+    .user-row:last-child {
+        border-bottom: none;
+    }
+
+    .username {
+        font-weight: 600;
+        color: var(--primary-purple);
+    }
+
+    .user-info h4 {
+        margin: 0 0 0.25rem 0;
+        color: var(--deep-navy);
+    }
+
+    .user-info p {
+        margin: 0;
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+    }
+
+    .user-email {
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+    }
+
+    .role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .role-admin {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .role-user {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .status-active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-small {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 5px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .pagination a {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--light-lavender);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--deep-navy);
+        transition: all 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background: var(--primary-purple);
+        color: white;
+        border-color: var(--primary-purple);
+    }
+
+    .pagination .current {
+        background: var(--primary-purple);
+        color: white;
+        border-color: var(--primary-purple);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--muted-gray);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--light-lavender);
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 1rem;
+        }
+        
+        .table-header,
+        .user-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .table-header {
+            display: none;
+        }
+        
+        .user-row {
+            border: 1px solid var(--light-lavender);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Gestionar Usuarios</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Dashboard
+        </a>
+    </div>
+
+    {% if users.items %}
+    <div class="users-table">
+        <div class="table-header">
+            <div>Usuario</div>
+            <div>Información</div>
+            <div>Email</div>
+            <div>Rol</div>
+            <div>Estado</div>
+            <div>Acciones</div>
+        </div>
+
+        {% for user in users.items %}
+        <div class="user-row">
+            <div class="username">{{ user.username }}</div>
+            
+            <div class="user-info">
+                <h4>{{ user.get_full_name() }}</h4>
+                <p>Miembro desde {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+            </div>
+            
+            <div class="user-email">
+                {{ user.email }}
+            </div>
+            
+            <div>
+                <span class="role-badge role-{{ user.role }}">
+                    {{ user.role }}
+                </span>
+            </div>
+            
+            <div>
+                <span class="status-badge status-{{ 'active' if user.is_active else 'inactive' }}">
+                    {{ 'Activo' if user.is_active else 'Inactivo' }}
+                </span>
+            </div>
+            
+            <div class="user-actions">
+                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-small btn-primary">
+                    <i class="fas fa-eye"></i>
+                </a>
+                {% if user.id != current_user.id %}
+                <form method="POST" action="{{ url_for('admin.toggle_user_status', user_id=user.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-small btn-secondary">
+                        <i class="fas fa-{{ 'ban' if user.is_active else 'check' }}"></i>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if users.pages > 1 %}
+    <div class="pagination">
+        {% if users.has_prev %}
+            <a href="{{ url_for('admin.users', page=users.prev_num) }}">Anterior</a>
+        {% endif %}
+        
+        {% for page_num in users.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != users.page %}
+                    <a href="{{ url_for('admin.users', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <span class="current">{{ page_num }}</span>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if users.has_next %}
+            <a href="{{ url_for('admin.users', page=users.next_num) }}">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-users"></i>
+        <h3>No hay usuarios registrados</h3>
+        <p>Cuando los usuarios se registren, aparecerán aquí</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

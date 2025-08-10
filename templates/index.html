@@ -482,11 +482,11 @@
         <div class="floating-shape"></div>
     </div>
     <div class="hero-content">
-        <h1 class="typewriter-heading"><span id="typewriter">Creative Design That Tells Your Story</span><span class="typing-caret">|</span></h1>
-        <p>I'm Berta Albas, a passionate graphic designer specializing in brand identity, digital art, and custom portraits that capture the essence of who you are.</p>
+        <h1 class="typewriter-heading"><span id="typewriter">Diseño creativo que cuenta tu historia</span><span class="typing-caret">|</span></h1>
+        <p>Soy Berta Albas, diseñadora gráfica especializada en identidad de marca, arte digital y retratos personalizados que capturan tu esencia.</p>
         <div class="hero-buttons">
-            <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary">View My Work</a>
-            <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Commission Art</a>
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-secondary">Ver mi trabajo</a>
+            <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Encargar arte</a>
         </div>
     </div>
 </section>
@@ -495,10 +495,10 @@
 <section class="about-section">
     <div class="about-container">
         <div class="about-text">
-            <h2>Design with Purpose & Passion</h2>
-            <p>With over 8 years of experience in graphic design, I believe that great design goes beyond aesthetics—it tells a story, evokes emotion, and creates connections.</p>
-            <p>My approach combines creative intuition with strategic thinking, ensuring that every project not only looks beautiful but also serves its intended purpose effectively.</p>
-            <a href="{{ url_for('main.about') }}" class="btn btn-primary">Learn More About Me</a>
+            <h2>Diseño con propósito y pasión</h2>
+            <p>Con más de 8 años de experiencia en diseño gráfico, creo que el buen diseño va más allá de lo estético: cuenta una historia, despierta emociones y crea conexiones.</p>
+            <p>Combino intuición creativa con pensamiento estratégico para que cada proyecto no solo sea bello, sino que también cumpla su objetivo de forma efectiva.</p>
+            <a href="{{ url_for('main.about') }}" class="btn btn-primary">Saber más sobre mí</a>
         </div>
         <div class="about-image">
             <img src="https://images.unsplash.com/photo-1494790108755-2616c8da3f46?w=600" alt="Berta Albas - Graphic Designer">
@@ -531,8 +531,8 @@
 <!-- Portfolio Preview -->
 <section class="portfolio-preview">
     <div class="section-header">
-        <h2>Featured Work</h2>
-        <p>A curated selection of my recent projects showcasing various design disciplines and creative solutions.</p>
+        <h2>Trabajos destacados</h2>
+        <p>Una selección cuidada de proyectos recientes que muestran diferentes disciplinas y soluciones creativas.</p>
     </div>
     <div class="portfolio-grid">
         {% for work in featured_works %}
@@ -546,48 +546,48 @@
         {% endfor %}
     </div>
     <div style="text-align: center; margin-top: 3rem;">
-        <a href="{{ url_for('portfolio.index') }}" class="btn btn-primary">View Full Portfolio</a>
+            <a href="{{ url_for('portfolio.index') }}" class="btn btn-primary">Ver portafolio completo</a>
     </div>
 </section>
 
 <!-- Services Section -->
 <section class="services-section">
     <div class="section-header">
-        <h2>My Services</h2>
-        <p>From custom portraits to complete brand identities, I offer a range of design services tailored to your needs.</p>
+        <h2>Mis servicios</h2>
+        <p>Desde retratos personalizados hasta identidades de marca completas, ofrezco servicios de diseño adaptados a tus necesidades.</p>
     </div>
     <div class="services-grid">
         <div class="service-card">
             <div class="service-icon">
                 <i class="fas fa-paint-brush"></i>
             </div>
-            <h3>Custom Portraits</h3>
-            <p>Personalized digital and traditional portraits that capture the unique personality and essence of your subject.</p>
-            <div class="service-price">Starting at $150</div>
+            <h3>Retratos personalizados</h3>
+            <p>Retratos digitales y tradicionales que capturan la personalidad y esencia de cada persona o mascota.</p>
+            <div class="service-price">Desde $150</div>
         </div>
         <div class="service-card">
             <div class="service-icon">
                 <i class="fas fa-bullseye"></i>
             </div>
-            <h3>Brand Identity</h3>
-            <p>Complete brand identity packages including logo design, color palettes, typography, and brand guidelines.</p>
-            <div class="service-price">Starting at $800</div>
+            <h3>Identidad de marca</h3>
+            <p>Paquetes completos de identidad visual: logotipo, paleta de color, tipografías y guía de estilo.</p>
+            <div class="service-price">Desde $800</div>
         </div>
         <div class="service-card">
             <div class="service-icon">
                 <i class="fas fa-laptop"></i>
             </div>
-            <h3>Web Design</h3>
-            <p>Modern, responsive website designs that perfectly represent your brand and engage your audience.</p>
-            <div class="service-price">Starting at $1,200</div>
+            <h3>Diseño web</h3>
+            <p>Diseños modernos y responsive que representan tu marca y conectan con tu audiencia.</p>
+            <div class="service-price">Desde $1,200</div>
         </div>
         <div class="service-card">
             <div class="service-icon">
                 <i class="fas fa-print"></i>
             </div>
-            <h3>Print Design</h3>
-            <p>Eye-catching print materials including brochures, posters, business cards, and packaging design.</p>
-            <div class="service-price">Starting at $200</div>
+            <h3>Diseño para impresión</h3>
+            <p>Material impreso atractivo: folletos, carteles, tarjetas y diseño de packaging.</p>
+            <div class="service-price">Desde $200</div>
         </div>
     </div>
 </section>
@@ -596,11 +596,11 @@
 <section class="cta-section">
     <div class="cta-bg"></div>
     <div class="cta-content">
-        <h2>Ready to Bring Your Vision to Life?</h2>
-        <p>Let's collaborate to create something extraordinary that perfectly represents your unique story and vision.</p>
+        <h2>¿Listos para dar vida a tu visión?</h2>
+        <p>Colaboremos para crear algo extraordinario que represente tu historia y visión.</p>
         <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="{{ url_for('main.contact') }}" class="btn btn-secondary">Start a Project</a>
-            <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Browse Shop</a>
+            <a href="{{ url_for('main.contact') }}" class="btn btn-secondary">Empezar un proyecto</a>
+            <a href="{{ url_for('shop.index') }}" class="btn btn-outline">Ver tienda</a>
         </div>
     </div>
 </section>
@@ -657,9 +657,9 @@
         if (!element) return;
 
         const phrases = [
-            "Creative Design That Tells Your Story",
-            "Brand Identity · Digital Art · Custom Portraits",
-            "Beautiful Visuals, Clear Strategy"
+            "Diseño creativo que cuenta tu historia",
+            "Identidad de marca · Arte digital · Retratos personalizados",
+            "Visuales bellos, estrategia clara"
         ];
         let phraseIndex = 0;
         let charIndex = 0;

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Aviso Legal - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .legal-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .legal-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 20px;
+    }
+
+    .legal-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .legal-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .legal-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        line-height: 1.8;
+    }
+
+    .legal-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .legal-section h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--light-lavender);
+        padding-bottom: 0.5rem;
+    }
+
+    .legal-section h3 {
+        color: var(--primary-purple);
+        font-size: 1.2rem;
+        margin: 1.5rem 0 0.75rem 0;
+    }
+
+    .legal-section p {
+        margin-bottom: 1rem;
+        color: var(--muted-gray);
+    }
+
+    .legal-section ul {
+        margin: 1rem 0;
+        padding-left: 2rem;
+    }
+
+    .legal-section li {
+        margin-bottom: 0.5rem;
+        color: var(--muted-gray);
+    }
+
+    .contact-info {
+        background: var(--light-lavender);
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin: 2rem 0;
+    }
+
+    .contact-info h3 {
+        color: var(--primary-purple);
+        margin-bottom: 1rem;
+    }
+
+    .contact-info p {
+        margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .legal-container {
+            padding: 1rem;
+        }
+        
+        .legal-content {
+            padding: 2rem 1.5rem;
+        }
+        
+        .legal-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="legal-container">
+    <div class="legal-header">
+        <h1>Aviso Legal</h1>
+        <p>Información legal y de contacto</p>
+    </div>
+
+    <div class="legal-content">
+        <div class="legal-section">
+            <h2>1. Información General</h2>
+            <p>En cumplimiento con el deber de información dispuesto en la Ley 34/2002 de Servicios de la Sociedad de la Información y el Comercio Electrónico (LSSI-CE), se facilitan a continuación los siguientes datos de información general de este sitio web:</p>
+            
+            <p>La titularidad de este sitio web corresponde a: <strong>Berta Albas</strong></p>
+            <p>NIF/CIF: [Número fiscal]</p>
+            <p>Domicilio: Sabadell, Barcelona, España</p>
+            <p>Email: [Email de contacto]</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>2. Términos y Condiciones de Uso</h2>
+            <h3>2.1 Objeto</h3>
+            <p>Las presentes condiciones regulan el uso del sitio web que Berta Albas pone a disposición de los usuarios de Internet.</p>
+            
+            <h3>2.2 Condiciones de Uso</h3>
+            <p>El usuario se compromete a utilizar el sitio web de conformidad con la ley, la moral, las buenas costumbres y el orden público. Asimismo, el usuario se compromete a no utilizar el sitio web con fines ilícitos o lesivos.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>3. Propiedad Intelectual</h2>
+            <p>Los derechos de propiedad intelectual del contenido de las páginas web, su diseño gráfico y códigos son titularidad de Berta Albas y quedan reservados todos los derechos sobre los mismos.</p>
+            
+            <p>Queda prohibida la reproducción, distribución, comercialización y transformación, total o parcial, no autorizada de los contenidos de este sitio web, salvo que sea para uso personal y privado.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>4. Responsabilidad</h2>
+            <p>Berta Albas no se hace responsable de los daños y perjuicios que se pudieran derivar de interferencias, omisiones, interrupciones, informáticos, averías telefónicas o desconexiones en el funcionamiento operativo de este sistema electrónico.</p>
+            
+            <p>Asimismo, Berta Albas no garantiza la disponibilidad, continuidad ni la infalibilidad del funcionamiento del sitio web.</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>5. Legislación Aplicable</h2>
+            <p>Las presentes condiciones se rigen por la legislación española. Para cualquier litigio que pudiera surgir relacionado con el sitio web o la actividad que en él se desarrolla serán competentes los Juzgados y Tribunales de Barcelona.</p>
+        </div>
+
+        <div class="contact-info">
+            <h3>Información de Contacto</h3>
+            <p><strong>Berta Albas</strong></p>
+            <p><i class="fas fa-map-marker-alt"></i> Sabadell, Barcelona, España</p>
+            <p><i class="fas fa-envelope"></i> [Email de contacto]</p>
+            <p><i class="fas fa-phone"></i> [Teléfono de contacto]</p>
+        </div>
+
+        <div class="legal-section">
+            <h2>6. Modificaciones</h2>
+            <p>Berta Albas se reserva el derecho de efectuar sin previo aviso las modificaciones que considere oportunas en su sitio web, pudiendo cambiar, suprimir o añadir tanto los contenidos y servicios que se presten a través de la misma como la forma en la que éstos aparezcan presentados o localizados en su sitio web.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

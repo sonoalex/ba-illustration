@@ -1,6 +1,7 @@
 Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate==4.1.0
+Flask-Login==0.6.3
 psycopg2-binary==2.9.10
 stripe==12.1.0
 gunicorn==23.0.0

@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, flash, current_app
+from flask_login import login_required, current_user
 from models.product import Product
 from models.order import Order, OrderItem
+from models.user import User
 from app import db
 import stripe
 import os
@@ -56,6 +58,39 @@ def cart():
     
     stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY') or os.environ.get('STRIPE_PUBLISHABLE_KEY')
     return render_template('cart.html', 
+                         cart_items=cart_items, 
+                         total=total,
+                         stripe_key=stripe_key)
+
+@bp.route('/checkout')
+@login_required
+def checkout():
+    """Checkout page - requires login."""
+    cart = session.get('cart', {})
+    if not cart:
+        flash('Tu carrito está vacío.', 'warning')
+        return redirect(url_for('shop.cart'))
+    
+    cart_items = []
+    total = 0
+    
+    for product_id, quantity in cart.items():
+        product = Product.query.get(int(product_id))
+        if product and product.is_available:
+            subtotal = product.price * quantity
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'subtotal': subtotal
+            })
+            total += subtotal
+    
+    if not cart_items:
+        flash('No hay productos válidos en tu carrito.', 'warning')
+        return redirect(url_for('shop.cart'))
+    
+    stripe_key = current_app.config.get('STRIPE_PUBLISHABLE_KEY') or os.environ.get('STRIPE_PUBLISHABLE_KEY')
+    return render_template('checkout.html', 
                          cart_items=cart_items, 
                          total=total,
                          stripe_key=stripe_key)
@@ -193,7 +228,22 @@ def cart_total():
 def create_payment_intent():
     """Create Stripe payment intent."""
     try:
-        data = request.get_json()
+        # Handle both JSON and FormData
+        if request.content_type and 'multipart/form-data' in request.content_type:
+            data = {
+                'name': request.form.get('name'),
+                'email': request.form.get('email'),
+                'address_line1': request.form.get('address_line1'),
+                'address_line2': request.form.get('address_line2'),
+                'address_city': request.form.get('address_city'),
+                'address_postal': request.form.get('address_postal'),
+                'address_country': request.form.get('address_country'),
+            }
+            customer_image_file = request.files.get('customer_image')
+        else:
+            data = request.get_json()
+            customer_image_file = None
+            
         cart = session.get('cart', {})
         
         if not cart:
@@ -241,11 +291,24 @@ def create_payment_intent():
             current_app.logger.error("Stripe secret key not configured")
             return jsonify({'error': 'Payment processing is not configured'}), 500
         
+        # Build shipping details (optional but useful)
+        shipping = {
+            'name': customer_name,
+            'address': {
+                'line1': data.get('address_line1', ''),
+                'line2': data.get('address_line2', ''),
+                'city': data.get('address_city', ''),
+                'postal_code': data.get('address_postal', ''),
+                'country': data.get('address_country', '')
+            }
+        }
+
         # Create payment intent with Stripe
         intent = stripe.PaymentIntent.create(
             amount=int(total_amount * 100),  # Stripe uses cents
-            currency='usd',
+            currency='eur',
             automatic_payment_methods={'enabled': True},
+            shipping=shipping,
             metadata={
                 'customer_name': customer_name,
                 'customer_email': customer_email,
@@ -254,10 +317,21 @@ def create_payment_intent():
         )
         
         # Create order in database
+        # Persist order with shipping address
+        address_line1 = data.get('address_line1', '')
+        address_line2 = data.get('address_line2', '')
+        address_city = data.get('address_city', '')
+        address_postal = data.get('address_postal', '')
+        address_country = data.get('address_country', '')
+        shipping_address = \
+            f"{address_line1}\n{address_line2}\n{address_postal} {address_city}\n{address_country}".strip()
+
         order = Order(
+            user_id=current_user.id if current_user.is_authenticated else None,
             customer_name=customer_name,
             customer_email=customer_email,
             customer_phone=data.get('phone', ''),
+            shipping_address=shipping_address,
             total_amount=total_amount,
             stripe_payment_intent_id=intent.id,
             status='pending',
@@ -269,23 +343,49 @@ def create_payment_intent():
         
         # Add order items
         for item_data in order_items:
+            customer_image_path = None
+            
+            # Handle customer image upload for products that require it
+            if item_data['product'].requires_image and customer_image_file:
+                import os
+                from datetime import datetime
+                from werkzeug.utils import secure_filename
+                
+                # Create uploads directory if it doesn't exist
+                upload_dir = os.path.join(current_app.root_path, 'static', 'uploads', 'customer_images')
+                os.makedirs(upload_dir, exist_ok=True)
+                
+                # Generate unique filename
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                original_filename = secure_filename(customer_image_file.filename)
+                file_extension = os.path.splitext(original_filename)[1] or '.jpg'
+                filename = f"customer_{order.id}_{item_data['product'].id}_{timestamp}{file_extension}"
+                filepath = os.path.join(upload_dir, filename)
+                
+                # Save the uploaded file
+                try:
+                    customer_image_file.save(filepath)
+                    customer_image_path = f"uploads/customer_images/{filename}"
+                except Exception as e:
+                    current_app.logger.error(f"Error saving customer image: {str(e)}")
+                    return jsonify({'error': 'Error al guardar la imagen'}), 500
+            
             order_item = OrderItem(
                 order_id=order.id,
                 product_id=item_data['product'].id,
                 product_name=item_data['product'].name,
-                product_description=item_data['product'].description,
-                unit_price=item_data['unit_price'],
-                quantity=item_data['quantity']
+                product_price=item_data['unit_price'],
+                quantity=item_data['quantity'],
+                customer_image=customer_image_path
             )
             db.session.add(order_item)
         
-        # Calculate and save totals
-        order.calculate_totals()
+        # Commit the order
         db.session.commit()
         
         return jsonify({
             'client_secret': intent.client_secret,
-            'order_id': order.order_id,
+            'order_id': order.id,
             'amount': total_amount
         })
         
@@ -305,9 +405,9 @@ def payment_success():
     order = None
     
     if order_id:
-        order = Order.query.filter_by(order_id=order_id).first()
+        order = Order.query.get(order_id)
         if order and order.payment_status == 'pending':
-            order.mark_as_paid()
+            order.payment_status = 'paid'
             db.session.commit()
             
             # Clear the cart after successful payment
@@ -319,7 +419,7 @@ def payment_success():
 @bp.route('/order/<order_id>')
 def order_detail(order_id):
     """Order detail page."""
-    order = Order.query.filter_by(order_id=order_id).first_or_404()
+    order = Order.query.get_or_404(order_id)
     return render_template('order_detail.html', order=order)
 
 @bp.route('/my-orders')
@@ -334,6 +434,28 @@ def my_orders():
                        .order_by(Order.created_at.desc()).all()
     
     return render_template('my_orders.html', orders=orders, email=email)
+
+@bp.route('/download-customer-image/<int:order_item_id>')
+@login_required
+def download_customer_image(order_item_id):
+    """Download customer image for admin."""
+    from flask import send_from_directory
+    
+    order_item = OrderItem.query.get_or_404(order_item_id)
+    
+    if not order_item.customer_image:
+        flash('No hay imagen disponible para este pedido.', 'error')
+        return redirect(url_for('admin.order_detail', order_id=order_item.order_id))
+    
+    # Check if user is admin or the order owner
+    if not current_user.is_admin() and order_item.order.user_id != current_user.id:
+        flash('No tienes permisos para acceder a esta imagen.', 'error')
+        return redirect(url_for('main.index'))
+    
+    upload_dir = os.path.join(current_app.root_path, 'static', 'uploads', 'customer_images')
+    filename = os.path.basename(order_item.customer_image)
+    
+    return send_from_directory(upload_dir, filename, as_attachment=True)
 
 @bp.route('/webhook', methods=['POST'])
 def stripe_webhook():

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Pago completado - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+  .success-hero {
+    padding: 8rem 0 3rem;
+    background: var(--gradient-primary);
+    color: #fff;
+    text-align: center;
+  }
+  .success-card {
+    max-width: 780px;
+    margin: -3rem auto 3rem;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(15,23,42,.15);
+    padding: 2rem;
+  }
+  .success-icon {
+    width: 70px; height: 70px; border-radius: 50%;
+    display: grid; place-items: center; margin: 0 auto 1rem;
+    background: var(--gradient-secondary);
+    color: #fff; font-size: 2rem;
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .row > div { background: #fafafa; border-radius: 12px; padding: 1rem; }
+  .label { color: var(--muted-gray); font-size: .9rem; margin-bottom: .25rem; }
+  .value { color: var(--deep-navy); font-weight: 600; }
+  .actions { display:flex; gap: .75rem; justify-content:center; margin-top: 1.25rem; flex-wrap: wrap; }
+  @media (max-width:768px){ .row { grid-template-columns: 1fr; } }
+</style>
+
+<section class="success-hero">
+  <h1 class="serif-font" style="font-size: 2.2rem;">¡Pago completado con éxito!</h1>
+  <p style="opacity:.9">Gracias por tu compra. Te hemos enviado un email con la confirmación.</p>
+</section>
+
+<div class="success-card">
+  <div class="success-icon"><i class="fas fa-check"></i></div>
+
+  {% if order %}
+  <div class="row">
+    <div>
+      <div class="label">Número de pedido</div>
+      <div class="value">{{ order.order_id }}</div>
+    </div>
+    <div>
+      <div class="label">Importe</div>
+      <div class="value">€{{ "%.2f"|format(order.total_amount or 0) }}</div>
+    </div>
+    <div>
+      <div class="label">Nombre</div>
+      <div class="value">{{ order.customer_name or '-' }}</div>
+    </div>
+    <div>
+      <div class="label">Correo</div>
+      <div class="value">{{ order.customer_email or '-' }}</div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="btn btn-primary" href="{{ url_for('shop.order_detail', order_id=order.order_id) }}">Ver pedido</a>
+    <a class="btn btn-secondary" href="{{ url_for('shop.index') }}">Seguir comprando</a>
+    <a class="btn btn-outline" href="{{ url_for('main.index') }}">Volver al inicio</a>
+  </div>
+  {% else %}
+  <p style="text-align:center; color: var(--muted-gray);">No hemos podido cargar los detalles del pedido. Puedes volver al inicio o a la tienda.</p>
+  <div class="actions">
+    <a class="btn btn-secondary" href="{{ url_for('shop.index') }}">Tienda</a>
+    <a class="btn btn-outline" href="{{ url_for('main.index') }}">Inicio</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+

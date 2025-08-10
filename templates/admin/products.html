@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Productos - Admin{% endblock %}
+
+{% block content %}
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin: 0;
+    }
+
+    .products-table {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .table-header {
+        background: var(--light-lavender);
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 80px 2fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        font-weight: 600;
+        color: var(--deep-navy);
+    }
+
+    .product-row {
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 80px 2fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        border-bottom: 1px solid var(--light-lavender);
+        transition: background 0.3s ease;
+    }
+
+    .product-row:hover {
+        background: #f8fafc;
+    }
+
+    .product-row:last-child {
+        border-bottom: none;
+    }
+
+    .product-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .product-info h4 {
+        margin: 0 0 0.25rem 0;
+        color: var(--deep-navy);
+    }
+
+    .product-info p {
+        margin: 0;
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+    }
+
+    .product-price {
+        font-weight: 600;
+        color: var(--accent-coral);
+    }
+
+    .category-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .category-portrait {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .category-design {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .category-print {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .status-available {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-unavailable {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .featured-badge {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 0.25rem 0.5rem;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-small {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+        border-radius: 5px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .pagination a {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--light-lavender);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--deep-navy);
+        transition: all 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background: var(--primary-purple);
+        color: white;
+        border-color: var(--primary-purple);
+    }
+
+    .pagination .current {
+        background: var(--primary-purple);
+        color: white;
+        border-color: var(--primary-purple);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--muted-gray);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--light-lavender);
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 1rem;
+        }
+        
+        .table-header,
+        .product-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .table-header {
+            display: none;
+        }
+        
+        .product-row {
+            border: 1px solid var(--light-lavender);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Gestionar Productos</h1>
+        <a href="{{ url_for('admin.new_product') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Nuevo Producto
+        </a>
+    </div>
+
+    {% if products.items %}
+    <div class="products-table">
+        <div class="table-header">
+            <div>Imagen</div>
+            <div>Producto</div>
+            <div>Precio</div>
+            <div>Categoría</div>
+            <div>Estado</div>
+            <div>Destacado</div>
+            <div>Acciones</div>
+        </div>
+
+        {% for product in products.items %}
+        <div class="product-row">
+            <div>
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+            </div>
+            
+            <div class="product-info">
+                <h4>{{ product.name }}</h4>
+                <p>{{ product.description[:100] }}{% if product.description|length > 100 %}...{% endif %}</p>
+                {% if product.requires_image %}
+                <span class="featured-badge">Requiere Imagen</span>
+                {% endif %}
+            </div>
+            
+            <div class="product-price">
+                €{{ "%.2f"|format(product.price) }}
+            </div>
+            
+            <div>
+                <span class="category-badge category-{{ product.category }}">
+                    {{ product.category }}
+                </span>
+            </div>
+            
+            <div>
+                <span class="status-badge status-{{ 'available' if product.is_available else 'unavailable' }}">
+                    {{ 'Disponible' if product.is_available else 'No Disponible' }}
+                </span>
+            </div>
+            
+            <div>
+                {% if product.is_featured %}
+                <span class="featured-badge">Destacado</span>
+                {% else %}
+                <span style="color: var(--muted-gray);">-</span>
+                {% endif %}
+            </div>
+            
+            <div class="product-actions">
+                <a href="{{ url_for('admin.edit_product', product_id=product.id) }}" class="btn btn-small btn-primary">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form method="POST" action="{{ url_for('admin.delete_product', product_id=product.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-small btn-secondary" onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if products.pages > 1 %}
+    <div class="pagination">
+        {% if products.has_prev %}
+            <a href="{{ url_for('admin.products', page=products.prev_num) }}">Anterior</a>
+        {% endif %}
+        
+        {% for page_num in products.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != products.page %}
+                    <a href="{{ url_for('admin.products', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <span class="current">{{ page_num }}</span>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if products.has_next %}
+            <a href="{{ url_for('admin.products', page=products.next_num) }}">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-box"></i>
+        <h3>No hay productos aún</h3>
+        <p>Crea tu primer producto para empezar a vender</p>
+        <a href="{{ url_for('admin.new_product') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Crear Producto
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

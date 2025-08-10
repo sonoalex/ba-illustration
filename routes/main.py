@@ -153,14 +153,24 @@ def shop_redirect():
     """Redirect to shop blueprint."""
     return redirect(url_for('shop.index'))
 
+@bp.route('/legal')
+def legal():
+    """Legal notice page."""
+    return render_template('legal.html')
+
 @bp.route('/privacy')
 def privacy():
     """Privacy policy page."""
     return render_template('privacy.html')
 
+@bp.route('/cookies')
+def cookies():
+    """Cookies policy page."""
+    return render_template('cookies.html')
+
 @bp.route('/terms')
 def terms():
-    """Terms of service page."""
+    """Terms and conditions page."""
     return render_template('terms.html')
 
 @bp.route('/faq')

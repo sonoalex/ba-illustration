@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        width: 100%;
+        max-width: 400px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--muted-gray);
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--deep-navy);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--light-lavender);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+    }
+
+    .auth-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .auth-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+    }
+
+    .auth-links {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .auth-links a {
+        color: var(--primary-purple);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .auth-links a:hover {
+        color: var(--secondary-pink);
+    }
+
+    .divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--light-lavender);
+    }
+
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+    }
+
+    .flash-messages {
+        margin-bottom: 1.5rem;
+    }
+
+    .flash-message {
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .flash-message.success {
+        background: #d1fae5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .flash-message.error {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .flash-message.warning {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .flash-message.info {
+        background: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Iniciar Sesión</h1>
+            <p>Accede a tu cuenta para continuar</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Nombre de usuario</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="auth-btn">Iniciar Sesión</button>
+        </form>
+
+        <div class="divider">
+            <span>o</span>
+        </div>
+
+        <div class="auth-links">
+            <p>¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate aquí</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Pedidos{% endblock %}
+
+{% block content %}
+<style>
+    .orders-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .orders-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .orders-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .orders-header p {
+        color: var(--muted-gray);
+        margin: 0;
+    }
+
+    .orders-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--light-lavender);
+    }
+
+    .order-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--primary-purple);
+        font-weight: 600;
+    }
+
+    .order-date {
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+    }
+
+    .order-status {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-paid {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-processing {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-shipped {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .status-delivered {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .order-items {
+        margin-bottom: 1.5rem;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--light-lavender);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .item-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .item-details h4 {
+        color: var(--deep-navy);
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    .item-details p {
+        color: var(--muted-gray);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .item-price {
+        font-weight: 600;
+        color: var(--accent-coral);
+    }
+
+    .order-total {
+        text-align: right;
+        border-top: 2px solid var(--primary-purple);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .total-amount {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--deep-navy);
+    }
+
+    .order-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--muted-gray);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--light-lavender);
+    }
+
+    .empty-state h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .orders-container {
+            padding: 1rem;
+        }
+        
+        .order-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .order-status {
+            align-self: flex-end;
+        }
+        
+        .item-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .order-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
+</style>
+
+<div class="orders-container">
+    <div class="orders-header">
+        <h1>Mis Pedidos</h1>
+        <p>Historial de todos tus pedidos</p>
+    </div>
+
+    {% if orders %}
+    <div class="orders-list">
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="order-header">
+                <div>
+                    <div class="order-number">Pedido #{{ order.order_number[:8] }}</div>
+                    <div class="order-date">{{ order.created_at.strftime('%d/%m/%Y a las %H:%M') }}</div>
+                </div>
+                <div class="order-status">
+                    <span class="status-badge status-{{ order.payment_status }}">
+                        {{ order.payment_status }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="order-items">
+                {% for item in order.items %}
+                <div class="order-item">
+                    <div class="item-info">
+                        <img src="{{ item.product.image_url if item.product else '#' }}" alt="{{ item.product_name }}" class="item-image">
+                        <div class="item-details">
+                            <h4>{{ item.product_name }}</h4>
+                            <p>Cantidad: {{ item.quantity }}</p>
+                        </div>
+                    </div>
+                    <div class="item-price">€{{ "%.2f"|format(item.product_price * item.quantity) }}</div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="order-total">
+                <div class="total-amount">Total: €{{ "%.2f"|format(order.total_amount) }}</div>
+            </div>
+
+            <div class="order-actions">
+                <a href="{{ url_for('shop.order_detail', order_id=order.id) }}" class="btn btn-outline">
+                    <i class="fas fa-eye"></i>
+                    Ver Detalles
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>No tienes pedidos aún</h3>
+        <p>Cuando hagas tu primer pedido, aparecerá aquí</p>
+        <a href="{{ url_for('shop.index') }}" class="btn btn-primary">
+            <i class="fas fa-shopping-cart"></i>
+            Ir a la Tienda
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

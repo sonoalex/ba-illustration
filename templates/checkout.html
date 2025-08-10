@@ -1,0 +1,524 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .checkout-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+    }
+
+    .checkout-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkout-section h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .order-summary {
+        background: var(--light-lavender);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .order-summary-section {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+    }
+
+    .order-summary h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(108, 92, 231, 0.1);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-details {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .item-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .item-info h4 {
+        color: var(--deep-navy);
+        margin-bottom: 0.25rem;
+    }
+
+    .item-info p {
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .image-required-badge {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 0.2rem 0.5rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .item-price {
+        font-weight: 600;
+        color: var(--accent-coral);
+    }
+
+    .total-section {
+        border-top: 2px solid var(--primary-purple);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .total-row.final {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--deep-navy);
+        border-top: 1px solid var(--light-lavender);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--deep-navy);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--light-lavender);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+    }
+
+    .form-group input[type="file"] {
+        padding: 0.5rem;
+        border: 2px dashed var(--light-lavender);
+        background: #fafafa;
+        cursor: pointer;
+    }
+
+    .form-group input[type="file"]:hover {
+        border-color: var(--primary-purple);
+        background: #f8f9ff;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .checkout-btn {
+        width: 100%;
+        padding: 1rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .checkout-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+    }
+
+    .checkout-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 3000;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid var(--light-lavender);
+        border-top: 4px solid var(--primary-purple);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .order-summary-section {
+            position: static;
+        }
+
+        .order-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .item-details {
+            width: 100%;
+        }
+
+        .item-price {
+            align-self: flex-end;
+        }
+    }
+</style>
+
+<div class="checkout-container">
+    <div class="checkout-section">
+        <h2>Información de Pago</h2>
+        
+        <form id="checkout-form" enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="customer-name">Nombre completo</label>
+                    <input type="text" id="customer-name" name="name" value="{{ current_user.get_full_name() }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="customer-email">Correo electrónico</label>
+                    <input type="email" id="customer-email" name="email" value="{{ current_user.email }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address-line1">Dirección (línea 1)</label>
+                <input type="text" id="address-line1" name="address_line1" placeholder="Calle y número" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="address-line2">Dirección (línea 2) — opcional</label>
+                <input type="text" id="address-line2" name="address_line2" placeholder="Piso, puerta, etc.">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="address-city">Ciudad</label>
+                    <input type="text" id="address-city" name="address_city" required>
+                </div>
+                <div class="form-group">
+                    <label for="address-postal">Código postal</label>
+                    <input type="text" id="address-postal" name="address_postal" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address-country">País</label>
+                <input type="text" id="address-country" name="address_country" placeholder="ES, FR, PT..." required>
+            </div>
+            
+            {% set has_image_requirement = cart_items | selectattr('product.requires_image', 'equalto', true) | list | length > 0 %}
+            
+            {% if has_image_requirement %}
+            <div class="form-group">
+                <label for="customer-image">Imagen de referencia (requerida para retratos)</label>
+                <input type="file" id="customer-image" name="customer_image" accept="image/*" required>
+                <small style="color: var(--muted-gray); font-size: 0.9rem;">
+                    Sube una imagen clara de alta calidad para el retrato. Formatos: JPG, PNG, GIF (máx. 5MB)
+                </small>
+                <div id="file-preview" style="margin-top: 0.5rem; display: none;">
+                    <img id="preview-image" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid var(--light-lavender);">
+                    <p id="file-info" style="margin-top: 0.5rem; color: var(--primary-purple); font-weight: 500;"></p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="card-element">Información de pago</label>
+                <div id="card-element" style="padding: 0.75rem; border: 2px solid var(--light-lavender); border-radius: 10px; background: white;">
+                    <!-- Stripe Elements will create form elements here -->
+                </div>
+                <div id="card-errors" role="alert" style="color: #ef4444; margin-top: 0.5rem; font-size: 0.9rem;"></div>
+            </div>
+            
+            <button type="submit" class="checkout-btn" id="submit-payment">
+                <i class="fas fa-lock"></i>
+                Pagar de forma segura - €{{ "%.2f"|format(total) }}
+            </button>
+        </form>
+    </div>
+
+    <div class="checkout-section order-summary-section">
+        <h2>Resumen del Pedido</h2>
+        
+        <div class="order-summary">
+            <h3>Artículos ({{ cart_items|length }})</h3>
+            
+            {% for item in cart_items %}
+            <div class="order-item">
+                <div class="item-details">
+                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="item-image">
+                    <div class="item-info">
+                        <h4>{{ item.product.name }}</h4>
+                        <p>Cantidad: {{ item.quantity }}</p>
+                        {% if item.product.requires_image %}
+                        <span class="image-required-badge">Requiere imagen</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="item-price">€{{ "%.2f"|format(item.subtotal) }}</div>
+            </div>
+            {% endfor %}
+            
+            <div class="total-section">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span>€{{ "%.2f"|format(total) }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Envío:</span>
+                    <span>Gratis</span>
+                </div>
+                <div class="total-row final">
+                    <span>Total:</span>
+                    <span>€{{ "%.2f"|format(total) }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+    // Initialize Stripe
+    const stripe = Stripe('{{ stripe_key }}');
+    const elements = stripe.elements();
+
+    // Create card element
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#1e293b',
+                '::placeholder': {
+                    color: '#64748b',
+                },
+            },
+        },
+    });
+
+    // Mount card element
+    cardElement.mount('#card-element');
+
+    // File preview functionality
+    const customerImageInput = document.getElementById('customer-image');
+    const filePreview = document.getElementById('file-preview');
+    const previewImage = document.getElementById('preview-image');
+    const fileInfo = document.getElementById('file-info');
+
+    if (customerImageInput) {
+        customerImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Show file info
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                fileInfo.textContent = `Archivo seleccionado: ${file.name} (${fileSize} MB)`;
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    filePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                filePreview.style.display = 'none';
+            }
+        });
+    }
+
+    // Handle real-time validation errors from the card Element
+    cardElement.on('change', ({error}) => {
+        const displayError = document.getElementById('card-errors');
+        if (error) {
+            displayError.textContent = error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Handle form submission
+    const form = document.getElementById('checkout-form');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const submitButton = document.getElementById('submit-payment');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        // Disable button and show loading
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+        loadingOverlay.style.display = 'flex';
+
+        // Handle file upload first if required
+        const customerImageInput = document.getElementById('customer-image');
+        if (customerImageInput && customerImageInput.files[0]) {
+            const file = customerImageInput.files[0];
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                throw new Error('La imagen es demasiado grande. Máximo 5MB.');
+            }
+        }
+
+        const {error, paymentMethod} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+                name: document.getElementById('customer-name').value,
+                email: document.getElementById('customer-email').value,
+                address: {
+                    line1: document.getElementById('address-line1').value,
+                    line2: document.getElementById('address-line2').value,
+                    city: document.getElementById('address-city').value,
+                    postal_code: document.getElementById('address-postal').value,
+                    country: document.getElementById('address-country').value
+                }
+            },
+        });
+
+        if (error) {
+            // Show error to customer
+            const errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message;
+            
+            // Re-enable button
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-lock"></i> Pagar de forma segura - ${{ "%.2f"|format(total) }}';
+            loadingOverlay.style.display = 'none';
+        } else {
+            // Create payment intent
+            try {
+                // Create FormData for file upload
+                const formData = new FormData();
+                formData.append('name', document.getElementById('customer-name').value);
+                formData.append('email', document.getElementById('customer-email').value);
+                formData.append('address_line1', document.getElementById('address-line1').value);
+                formData.append('address_line2', document.getElementById('address-line2').value);
+                formData.append('address_city', document.getElementById('address-city').value);
+                formData.append('address_postal', document.getElementById('address-postal').value);
+                formData.append('address_country', document.getElementById('address-country').value);
+
+                // Add customer image if provided
+                if (customerImageInput && customerImageInput.files[0]) {
+                    formData.append('customer_image', customerImageInput.files[0]);
+                }
+
+                const response = await fetch("{{ url_for('shop.create_payment_intent') }}", {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                // Confirm payment
+                const {error: confirmError} = await stripe.confirmCardPayment(result.client_secret, {
+                    payment_method: paymentMethod.id,
+                });
+
+                if (confirmError) {
+                    throw new Error(confirmError.message);
+                }
+
+                // Payment successful - redirect to success page
+                window.location.href = "{{ url_for('shop.payment_success') }}?order_id=" + result.order_id;
+
+            } catch (error) {
+                console.error('Error:', error);
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = error.message || 'Error al procesar el pago. Inténtalo de nuevo.';
+                
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-lock"></i> Pagar de forma segura - ${{ "%.2f"|format(total) }}';
+                loadingOverlay.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock %}

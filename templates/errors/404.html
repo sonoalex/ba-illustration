@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Page Not Found - Berta Albas{% endblock %}
+{% block title %}Página no encontrada - Berta Albas{% endblock %}
 
 {% block content %}
 <section style="padding: 8rem 0 4rem; text-align: center; background: var(--light-lavender);">
   <div style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
-    <h1 class="serif-font" style="font-size: 3rem; color: var(--deep-navy); margin-bottom: 1rem;">Page not found</h1>
+    <h1 class="serif-font" style="font-size: 3rem; color: var(--deep-navy); margin-bottom: 1rem;">Página no encontrada</h1>
     <p style="color: var(--muted-gray); font-size: 1.1rem; margin-bottom: 2rem;">
-      The page you’re looking for doesn’t exist or may have been moved.
+      La página que buscas no existe o pudo haberse movido.
     </p>
     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-      <a class="btn btn-primary" href="{{ url_for('main.index') }}">Go to Home</a>
-      <a class="btn btn-outline" href="{{ url_for('portfolio.index') }}">View Portfolio</a>
-      <a class="btn btn-secondary" href="{{ url_for('shop.index') }}">Browse Shop</a>
+      <a class="btn btn-primary" href="{{ url_for('main.index') }}">Ir al inicio</a>
+      <a class="btn btn-outline" href="{{ url_for('portfolio.index') }}">Ver portafolio</a>
+      <a class="btn btn-secondary" href="{{ url_for('shop.index') }}">Ir a la tienda</a>
     </div>
   </div>
 </section>

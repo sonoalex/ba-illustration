@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .admin-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .admin-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-purple);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: var(--muted-gray);
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .admin-sections {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .admin-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-header h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin: 0;
+    }
+
+    .section-link {
+        color: var(--primary-purple);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .section-link:hover {
+        color: var(--secondary-pink);
+    }
+
+    .recent-orders {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .recent-orders li {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--light-lavender);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .recent-orders li:last-child {
+        border-bottom: none;
+    }
+
+    .order-info h4 {
+        color: var(--deep-navy);
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+    }
+
+    .order-info p {
+        color: var(--muted-gray);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .order-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-paid {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-processing {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .admin-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 1rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .admin-sections {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Panel de Administración</h1>
+        <p>Gestiona tu tienda y usuarios</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_users }}</div>
+            <div class="stat-label">Usuarios Registrados</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-number">{{ total_orders }}</div>
+            <div class="stat-label">Pedidos Totales</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-number">{{ total_products }}</div>
+            <div class="stat-label">Productos</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-number">€{{ "%.2f"|format(recent_revenue) }}</div>
+            <div class="stat-label">Ingresos (30 días)</div>
+        </div>
+    </div>
+
+    <div class="admin-sections">
+        <div class="admin-section">
+            <div class="section-header">
+                <h3>Pedidos Recientes</h3>
+                <a href="{{ url_for('admin.orders') }}" class="section-link">Ver todos</a>
+            </div>
+            
+            {% if recent_orders %}
+            <ul class="recent-orders">
+                {% for order in recent_orders %}
+                <li>
+                    <div class="order-info">
+                        <h4>Pedido #{{ order.order_number[:8] }}</h4>
+                        <p>{{ order.customer_name }} - €{{ "%.2f"|format(order.total_amount) }}</p>
+                    </div>
+                    <span class="order-status status-{{ order.payment_status }}">
+                        {{ order.payment_status }}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="color: var(--muted-gray); text-align: center;">No hay pedidos recientes</p>
+            {% endif %}
+        </div>
+
+        <div class="admin-section">
+            <div class="section-header">
+                <h3>Acciones Rápidas</h3>
+            </div>
+            
+            <div class="admin-actions">
+                <a href="{{ url_for('admin.orders') }}" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag"></i>
+                    Gestionar Pedidos
+                </a>
+                
+                <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+                    <i class="fas fa-users"></i>
+                    Gestionar Usuarios
+                </a>
+                
+                <a href="{{ url_for('admin.products') }}" class="btn btn-outline">
+                    <i class="fas fa-box"></i>
+                    Gestionar Productos
+                </a>
+                
+                <a href="{{ url_for('admin.analytics') }}" class="btn btn-outline">
+                    <i class="fas fa-chart-bar"></i>
+                    Analíticas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

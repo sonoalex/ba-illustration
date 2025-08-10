@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Pedidos - Admin{% endblock %}
+
+{% block content %}
+<style>
+    .admin-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin: 0;
+    }
+
+    .orders-table {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .table-header {
+        background: var(--light-lavender);
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 80px 1.5fr 100px 100px 100px 100px 80px;
+        gap: 0.75rem;
+        font-weight: 600;
+        color: var(--deep-navy);
+        font-size: 0.9rem;
+    }
+
+    .order-row {
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 80px 1.5fr 100px 100px 100px 100px 80px;
+        gap: 0.75rem;
+        align-items: center;
+        border-bottom: 1px solid var(--light-lavender);
+        transition: background 0.3s ease;
+    }
+
+    .order-row:hover {
+        background: #f8fafc;
+    }
+
+    .order-row:last-child {
+        border-bottom: none;
+    }
+
+    .order-number {
+        font-weight: 600;
+        color: var(--primary-purple);
+        font-size: 0.85rem;
+    }
+
+    .customer-info h4 {
+        margin: 0 0 0.25rem 0;
+        color: var(--deep-navy);
+        font-size: 0.95rem;
+    }
+
+    .customer-info p {
+        margin: 0;
+        color: var(--muted-gray);
+        font-size: 0.8rem;
+    }
+
+    .order-date {
+        color: var(--muted-gray);
+        font-size: 0.85rem;
+    }
+
+    .order-amount {
+        font-weight: 600;
+        color: var(--accent-coral);
+        font-size: 0.9rem;
+    }
+
+    .status-badge {
+        padding: 0.2rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-paid {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-processing {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-shipped {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .status-delivered {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .order-actions {
+        display: flex;
+        gap: 0.25rem;
+        justify-content: center;
+    }
+
+    .btn-small {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .pagination a {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--light-lavender);
+        border-radius: 5px;
+        text-decoration: none;
+        color: var(--deep-navy);
+        transition: all 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background: var(--primary-purple);
+        color: white;
+        border-color: var(--primary-purple);
+    }
+
+    .pagination .current {
+        background: var(--primary-purple);
+        color: white;
+        border-color: var(--primary-purple);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--muted-gray);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: var(--light-lavender);
+    }
+
+    @media (max-width: 768px) {
+        .admin-container {
+            padding: 1rem;
+        }
+        
+        .table-header,
+        .order-row {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        
+        .table-header {
+            display: none;
+        }
+        
+        .order-row {
+            border: 1px solid var(--light-lavender);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1>Gestionar Pedidos</h1>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Dashboard
+        </a>
+    </div>
+
+    {% if orders.items %}
+    <div class="orders-table">
+        <div class="table-header">
+            <div>Número</div>
+            <div>Cliente</div>
+            <div>Fecha</div>
+            <div>Total</div>
+            <div>Pago</div>
+            <div>Estado</div>
+            <div>Acciones</div>
+        </div>
+
+        {% for order in orders.items %}
+        <div class="order-row">
+            <div class="order-number">#{{ order.order_number[:8] }}</div>
+            
+            <div class="customer-info">
+                <h4>{{ order.customer_name }}</h4>
+                <p>{{ order.customer_email }}</p>
+            </div>
+            
+            <div class="order-date">
+                {{ order.created_at.strftime('%d/%m/%Y') }}
+            </div>
+            
+            <div class="order-amount">
+                €{{ "%.2f"|format(order.total_amount) }}
+            </div>
+            
+            <div>
+                <span class="status-badge status-{{ order.payment_status }}">
+                    {{ order.payment_status }}
+                </span>
+            </div>
+
+            <div>
+                <span class="status-badge status-{{ order.status }}">
+                    {{ order.status }}
+                </span>
+            </div>
+            
+            <div class="order-actions">
+                <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" class="btn btn-small btn-primary">
+                    <i class="fas fa-eye"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if orders.pages > 1 %}
+    <div class="pagination">
+        {% if orders.has_prev %}
+            <a href="{{ url_for('admin.orders', page=orders.prev_num) }}">Anterior</a>
+        {% endif %}
+        
+        {% for page_num in orders.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != orders.page %}
+                    <a href="{{ url_for('admin.orders', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <span class="current">{{ page_num }}</span>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        
+        {% if orders.has_next %}
+            <a href="{{ url_for('admin.orders', page=orders.next_num) }}">Siguiente</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>No hay pedidos aún</h3>
+        <p>Cuando los clientes hagan pedidos, aparecerán aquí</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

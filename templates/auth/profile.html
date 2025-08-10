@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .profile-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-header p {
+        color: var(--muted-gray);
+        margin: 0;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .profile-card h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+    }
+
+    .info-item {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--light-lavender);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: var(--muted-gray);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+    }
+
+    .info-value {
+        color: var(--deep-navy);
+        font-size: 1.1rem;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .role-admin {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .role-user {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-inactive {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .profile-actions {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .profile-actions h2 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--primary-purple);
+        border: 2px solid var(--primary-purple);
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn-outline:hover {
+        background: var(--primary-purple);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: var(--muted-gray);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .btn-secondary:hover {
+        background: #6b7280;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 1rem;
+        }
+        
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>Mi Perfil</h1>
+        <p>Gestiona tu información personal y cuenta</p>
+    </div>
+
+    <div class="profile-grid">
+        <div class="profile-card">
+            <h2>Información Personal</h2>
+            <div class="info-item">
+                <div class="info-label">Nombre Completo</div>
+                <div class="info-value">{{ current_user.get_full_name() }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Nombre de Usuario</div>
+                <div class="info-value">@{{ current_user.username }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Email</div>
+                <div class="info-value">{{ current_user.email }}</div>
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <h2>Información de la Cuenta</h2>
+            <div class="info-item">
+                <div class="info-label">Rol</div>
+                <div class="info-value">
+                    <span class="role-badge role-{{ current_user.role }}">
+                        {{ current_user.role }}
+                    </span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Estado</div>
+                <div class="info-value">
+                    <span class="status-badge status-{{ 'active' if current_user.is_active else 'inactive' }}">
+                        {{ 'Activo' if current_user.is_active else 'Inactivo' }}
+                    </span>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Miembro Desde</div>
+                <div class="info-value">{{ current_user.created_at.strftime('%d/%m/%Y') }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Total de Pedidos</div>
+                <div class="info-value">{{ current_user.orders|length }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <h2>Acciones</h2>
+        <div class="actions-grid">
+            <a href="{{ url_for('auth.edit_profile') }}" class="btn btn-outline">
+                <i class="fas fa-edit"></i>
+                Editar Perfil
+            </a>
+            <a href="{{ url_for('auth.my_orders') }}" class="btn btn-outline">
+                <i class="fas fa-shopping-bag"></i>
+                Mis Pedidos
+            </a>
+            {% if current_user.is_admin() %}
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">
+                <i class="fas fa-crown"></i>
+                Panel de Admin
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

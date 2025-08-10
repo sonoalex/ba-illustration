@@ -14,11 +14,9 @@ class Product(db.Model):
     stock_quantity = db.Column(db.Integer, default=0)  # 0 = unlimited for digital products
     digital_product = db.Column(db.Boolean, default=True)  # Most design work is digital
     delivery_time = db.Column(db.String(50))  # e.g., "3-5 business days"
+    requires_image = db.Column(db.Boolean, default=False)  # For portrait products that need customer image
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationship with order items
-    order_items = db.relationship('OrderItem', backref='product', lazy=True)
     
     def __repr__(self):
         return f'<Product {self.name}>'

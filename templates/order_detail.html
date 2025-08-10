@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle del pedido - Berta Albas{% endblock %}
+
+{% block content %}
+<style>
+  .order-hero { padding: 7rem 0 3rem; background: var(--gradient-secondary); color: #fff; text-align: center; }
+  .order-wrap { max-width: 1000px; margin: -2rem auto 3rem; background: #fff; border-radius: 18px; box-shadow: 0 18px 45px rgba(15,23,42,.12); overflow: hidden; }
+  .order-head { padding: 1.5rem 2rem; border-bottom: 1px solid #e5e7eb; display:flex; flex-wrap:wrap; gap:1rem; justify-content:space-between; }
+  .meta { display:grid; gap:.25rem; }
+  .label { color: var(--muted-gray); font-size: .9rem; }
+  .value { color: var(--deep-navy); font-weight: 600; }
+  .order-body { padding: 1rem 2rem 2rem; }
+  table { width:100%; border-collapse: collapse; }
+  th, td { padding: .9rem; border-bottom: 1px solid #eef2f7; text-align: left; }
+  th { color: var(--muted-gray); font-weight: 600; font-size:.95rem; }
+  .num { text-align: right; }
+  .totals { margin-top: 1rem; display: grid; gap:.5rem; max-width: 360px; margin-left: auto; }
+  .totals-row { display:flex; justify-content: space-between; }
+  .totals-row.total { font-size: 1.15rem; font-weight:700; color: var(--deep-navy); }
+  .actions { display:flex; gap:.75rem; justify-content:flex-end; margin-top: 1.25rem; flex-wrap:wrap; }
+  @media (max-width: 768px) { .order-head { padding: 1rem 1.25rem; } .order-body { padding: 1rem 1.25rem 1.5rem; } }
+</style>
+
+<section class="order-hero">
+  <h1 class="serif-font" style="font-size:2rem;">Detalle del pedido</h1>
+  <p style="opacity:.9;">Gracias por tu confianza. Aquí tienes el resumen de tu compra.</p>
+  <div style="margin-top:.75rem; font-size:.95rem; opacity:.9;">Pedido Nº: {{ order.id }}</div>
+</section>
+
+<div class="order-wrap">
+  <div class="order-head">
+    <div class="meta">
+      <div class="label">Estado</div>
+      <div class="value">{{ order.status|capitalize }}{% if order.payment_status %} · Pago: {{ order.payment_status|capitalize }}{% endif %}</div>
+    </div>
+    <div class="meta">
+      <div class="label">Fecha</div>
+      <div class="value">{{ order.created_at.strftime('%d/%m/%Y %H:%M') if order.created_at else '-' }}</div>
+    </div>
+    <div class="meta">
+      <div class="label">Cliente</div>
+      <div class="value">{{ order.customer_name }} · {{ order.customer_email }}</div>
+    </div>
+  </div>
+
+  <div class="order-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th class="num">Precio unidad</th>
+          <th class="num">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items %}
+        <tr>
+          <td>
+            <div style="font-weight:600; color:var(--deep-navy);">{{ item.product_name }}</div>
+          </td>
+          <td>{{ item.quantity }}</td>
+          <td class="num">€{{ "%.2f"|format(item.product_price) }}</td>
+          <td class="num">€{{ "%.2f"|format(item.product_price * item.quantity) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="totals-row total"><span>Total</span><span>€{{ "%.2f"|format(order.total_amount) }}</span></div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-secondary" href="{{ url_for('shop.index') }}">Seguir comprando</a>
+      <a class="btn btn-outline" href="{{ url_for('main.index') }}">Volver al inicio</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

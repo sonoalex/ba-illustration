@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Perfil{% endblock %}
+
+{% block content %}
+<style>
+    .auth-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-header h1 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-header p {
+        color: var(--muted-gray);
+        margin: 0;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--deep-navy);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--light-lavender);
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        background: white;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-purple);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .password-section {
+        border-top: 2px solid var(--light-lavender);
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .password-section h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--deep-navy);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-secondary {
+        background: var(--muted-gray);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #6b7280;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .auth-container {
+            padding: 1rem;
+        }
+        
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .btn-group {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Editar Perfil</h1>
+            <p>Actualiza tu información personal</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">Nombre</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ current_user.first_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Apellidos</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ current_user.last_name }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Nombre de Usuario</label>
+                <input type="text" id="username" value="{{ current_user.username }}" disabled>
+                <small style="color: var(--muted-gray); font-size: 0.9rem;">El nombre de usuario no se puede cambiar</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ current_user.email }}" required>
+            </div>
+
+            <div class="password-section">
+                <h3>Cambiar Contraseña</h3>
+                <p style="color: var(--muted-gray); margin-bottom: 1rem; font-size: 0.9rem;">
+                    Deja en blanco si no quieres cambiar la contraseña
+                </p>
+                <div class="form-group">
+                    <label for="new_password">Nueva Contraseña</label>
+                    <input type="password" id="new_password" name="new_password" minlength="6">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Guardar Cambios
+                </button>
+                <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@ from app import create_app, db
 from models.portfolio import Portfolio
 from models.product import Product
 from models.order import Order, OrderItem
+from models.user import User
 
 app = create_app()
 
@@ -13,7 +14,8 @@ def make_shell_context():
         'Portfolio': Portfolio, 
         'Product': Product, 
         'Order': Order, 
-        'OrderItem': OrderItem
+        'OrderItem': OrderItem,
+        'User': User
     }
 
 def init_database():
@@ -97,7 +99,8 @@ def init_database():
                     category="portrait",
                     is_featured=True,
                     digital_product=True,
-                    delivery_time="3-5 business days"
+                    delivery_time="3-5 business days",
+                    requires_image=True
                 ),
                 Product(
                     name="Custom Portrait - Oil Painting Style",
@@ -107,7 +110,8 @@ def init_database():
                     category="portrait",
                     is_featured=True,
                     digital_product=True,
-                    delivery_time="5-7 business days"
+                    delivery_time="5-7 business days",
+                    requires_image=True
                 ),
                 Product(
                     name="Pet Portrait",
@@ -117,7 +121,8 @@ def init_database():
                     category="portrait",
                     is_featured=True,
                     digital_product=True,
-                    delivery_time="3-5 business days"
+                    delivery_time="3-5 business days",
+                    requires_image=True
                 ),
                 Product(
                     name="Family Portrait Illustration",
@@ -126,7 +131,8 @@ def init_database():
                     image_url="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400",
                     category="portrait",
                     digital_product=True,
-                    delivery_time="5-7 business days"
+                    delivery_time="5-7 business days",
+                    requires_image=True
                 ),
                 Product(
                     name="Complete Logo Design Package",
@@ -168,6 +174,20 @@ def init_database():
             
             for item in sample_products:
                 db.session.add(item)
+        
+        # Add admin user if no users exist
+        if User.query.count() == 0:
+            print("Creating admin user...")
+            admin_user = User(
+                username='admin',
+                email='admin@bertaalbas.com',
+                first_name='Admin',
+                last_name='User',
+                role='admin'
+            )
+            admin_user.set_password('admin123')
+            db.session.add(admin_user)
+            print("Admin user created: username='admin', password='admin123'")
         
         try:
             db.session.commit()
